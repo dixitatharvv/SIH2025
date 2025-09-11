@@ -1,0 +1,33 @@
+# Core Framework
+fastapi
+uvicorn[standard]
+
+# Data Validation & Settings
+pydantic
+python-dotenv
+
+# Asynchronous Database Driver for PostgreSQL
+asyncpg
+SQLAlchemy
+
+# RabbitMQ Client
+pika
+
+# AWS S3 Integration
+boto3
+
+# For making external API calls (e.g., to Weather API)
+httpx
+
+# For handling file uploads
+python-multipart
+
+# AI / ML Libraries
+transformers
+torch
+scikit-learn
+opencv-python-headless
+
+# --- Development Dependencies (install separately) ---
+# For code quality and testing.
+# Run: pip install black ruff pytest
