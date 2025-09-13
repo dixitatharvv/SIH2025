@@ -4,6 +4,7 @@ uvicorn[standard]
 
 # Data Validation & Settings
 pydantic
+pydantic-settings
 python-dotenv
 
 # Asynchronous Database Driver for PostgreSQL
