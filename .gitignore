@@ -35,7 +35,7 @@ frontend/mobile_app/ios/Flutter/engine
 frontend/mobile_app/ios/Flutter/flutter_assets
 frontend/mobile_app/ios/.symlinks/
 frontend/mobile_app/ios/Runner/GeneratedPluginRegistrant.*
-
+frontend/mobile_app/.env
 
 
 frontend/web_app/node_modules/
