@@ -6,6 +6,7 @@ uvicorn[standard]
 pydantic
 pydantic-settings
 python-dotenv
+pydantic[email]
 
 # Asynchronous Database Driver for PostgreSQL
 asyncpg
@@ -13,6 +14,7 @@ SQLAlchemy
 
 # RabbitMQ Client
 pika
+aio-pika
 
 # AWS S3 Integration
 boto3
@@ -32,3 +34,14 @@ opencv-python-headless
 # --- Development Dependencies (install separately) ---
 # For code quality and testing.
 # Run: pip install black ruff pytest
+
+
+#Database ORM and PostgreSQL Driver
+sqlalchemy[asyncio]
+asyncpg
+psycopg2-binary
+GeoAlchemy2
+
+# Security and Authentication
+passlib[bcrypt]
+python-jose[cryptography]

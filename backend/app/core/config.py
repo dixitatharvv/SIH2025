@@ -1,11 +1,9 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    """
-    Manages application settings and environment variables.
-    """
-    DATABASE_URL: setattr
+    DATABASE_URL: str
     SECRET_KEY: str
+    RABBITMQ_URL: str
     
     model_config = SettingsConfigDict(env_file=".env")
 
