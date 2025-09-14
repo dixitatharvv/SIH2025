@@ -47,3 +47,6 @@ frontend/web_app/npm-debug.log
 frontend/web_app/yarn-debug.log*
 frontend/web_app/yarn-error.log*
 frontend/web_app/coverage/
+
+
+ai/config.py
