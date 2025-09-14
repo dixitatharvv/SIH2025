@@ -4,32 +4,34 @@ from datetime import datetime
 
 from app.db.models import UserRole
 
-class UserCreate(BaseModel):
+class UserBase(BaseModel):
     email: EmailStr
     full_name: str
+
+class UserCreate(UserBase):
     password: str
     role: UserRole
 
-class UserRead(BaseModel):
+class UserRead(UserBase):
     id: UUID
-    email: EmailStr
-    full_name: str
     role: UserRole
     is_active: bool
-    is_verified: bool
 
     class Config:
         from_attributes = True
 
 class Token(BaseModel):
     access_token: str
-    token_type: str = "bearer"
+    token_type: str
 
-class ReportCreate(BaseModel):
-    hazard_type: str
-    description: str | None = None
+class ReportBase(BaseModel):
+    user_hazard_type: str
+    user_description: str | None = None
     latitude: float
     longitude: float
+
+class ReportCreate(ReportBase):
+    pass
 
 class ReportSubmitResponse(BaseModel):
     message: str
