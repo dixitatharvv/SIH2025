@@ -20,7 +20,7 @@ backend/*.pyc
 backend/htmlcov/
 backend/.pytest_cache/
 backend/.ruff_cache/
-
+backend/app_comments_backup.txt
 
 frontend/mobile_app/build/
 frontend/mobile_app/.dart_tool/
