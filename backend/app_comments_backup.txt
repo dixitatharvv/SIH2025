@@ -1,0 +1,173 @@
+# BACKEND/APP COMMENTS BACKUP
+# This file contains all comments extracted from backend/app directory
+# Generated on: $(date)
+# 
+# Instructions for restoration:
+# 1. Each comment is marked with its file path and line number
+# 2. Comments are organized by file
+# 3. Use this file to restore comments after making commits
+
+# =============================================================================
+# FILE: backend/app/api/api.py
+# =============================================================================
+# Line 3: # Import the router objects from your endpoint files.
+# Line 4: # `auth.router` is the APIRouter instance from auth.py
+# Line 5: # `reports.router` is the APIRouter instance from reports.py
+# Line 8: # This is our main router that will be included in the FastAPI app instance.
+# Line 11: # --- Include Authentication Routes ---
+# Line 12: # This is the crucial line that was likely missing.
+# Line 13: # It tells the main router to include all endpoints from auth.py.
+# Line 16: # --- Include Report Routes ---
+# Line 17: # This line was already working correctly.
+
+# =============================================================================
+# FILE: backend/app/api/endpoints/auth.py
+# =============================================================================
+# Line 6: # Import all the necessary components we've built:
+# Line 7: # get_db: For getting a database session.
+# Line 8: # User: The SQLAlchemy model for our database table.
+# Line 9: # UserCreate, UserRead: Pydantic models for API input and output.
+# Line 10: # hash_password: Our secure password hashing function.
+# Line 16: # Create an APIRouter. This allows us to group related endpoints together
+# Line 17: # and include them in our main application.
+# Line 21: # `user_in` will be an instance of our UserCreate Pydantic model.
+# Line 22: # FastAPI automatically validates the incoming request body against this model.
+# Line 24: # `Depends(get_db)` is a dependency injection. FastAPI will call the `get_db`
+# Line 25: # function and pass its return value (an AsyncSession) to this endpoint.
+# Line 29-31: """
+#     Handles the registration of a new user (citizen, official, or analyst).
+#     """
+# Line 32: # --- Step 1: Check for existing user ---
+# Line 33: # It's crucial to ensure that every email address is unique in our system.
+# Line 37: # If a user is found, we raise an HTTPException. This immediately stops
+# Line 38: # the process and sends a clear 400 error back to the client.
+# Line 45: # --- Step 2: Hash the password ---
+# Line 46: # We NEVER store plain-text passwords. We call our secure hashing function.
+# Line 49: # --- Step 3: Create the new User database object ---
+# Line 50: # We create an instance of our SQLAlchemy User model with the validated data.
+# Line 57: # We add role-specific logic: citizens get a default reputation score.
+# Line 58: # For officials and analysts, this field will be NULL in the database.
+# Line 62: # --- Step 4: Save to the database ---
+# Line 63: # Add the new user object to the session.
+# Line 64: # Commit the transaction to permanently save the changes.
+# Line 67: # Refresh the `new_user` object to get the data just saved, like default values.
+# Line 70: # --- Step 5: Return the result ---
+# Line 71: # FastAPI will automatically serialize this `new_user` object using the
+# Line 72: # `UserRead` model, ensuring the hashed password is not sent back.
+
+# =============================================================================
+# FILE: backend/app/api/endpoints/reports.py
+# =============================================================================
+# Line 38: # --- ADDED ERROR HANDLING ---
+# Line 44: # If anything goes wrong with RabbitMQ, we now see a clear error
+# Line 45: print(f"CRITICAL: Failed to publish message to RabbitMQ. Error: {e}")
+# Line 46: # And we raise a proper server error instead of a fake success
+# Line 52: # ---------------------------
+
+# =============================================================================
+# FILE: backend/app/api.py
+# =============================================================================
+# Line 3: # Import the router objects from your endpoint files.
+# Line 4: # `auth.router` is the APIRouter instance from auth.py
+# Line 5: # `reports.router` is the APIRouter instance from reports.py
+# Line 8: # This is our main router that will be included in the FastAPI app instance.
+# Line 11: # --- Include Authentication Routes ---
+# Line 12: # We use .include_router() to add all the endpoints from the auth.py file.
+# Line 13: # The `prefix="/auth"` means all routes in auth.router will start with /auth
+# Line 14: # (e.g., /auth/register).
+# Line 15: # The `tags=["Authentication"]` groups these endpoints together in the API docs.
+# Line 18: # --- Include Report Routes ---
+# Line 19: # We do the same for the report submission endpoint.
+# Line 20: # All routes in reports.router will now start with /reports
+# Line 21: # (e.g., /reports/submit).
+
+# =============================================================================
+# FILE: backend/app/core/config.py
+# =============================================================================
+# Line 4-6: """
+#     Manages application settings by loading them from an .env file.
+#     """
+# Line 7: # These are now all required fields that MUST be in the .env file.
+# Line 10: # The default value has been removed.
+
+# =============================================================================
+# FILE: backend/app/core/security.py
+# =============================================================================
+# Line 6: # --- Password Hashing ---
+# Line 7: # We use bcrypt as the hashing algorithm. It's a strong, industry-standard choice.
+# Line 10-11: """Hashes a plain-text password using bcrypt."""
+# Line 14-15: """Verifies a plain-text password against a hashed one."""
+# Line 19: # --- JSON Web Token (JWT) Handling ---
+# Line 20: # This is the algorithm used to sign the token, ensuring it hasn't been tampered with.
+# Line 21: ALGORITHM = "HS256"
+# Line 22: # Tokens will be valid for 1 day. You can adjust this as needed.
+# Line 25-26: """Creates a new JWT access token."""
+# Line 28: # Set the token expiration time
+# Line 31: # Encode the token with your secret key from the .env file
+
+# =============================================================================
+# FILE: backend/app/db/models.py
+# =============================================================================
+# Line 10: # Use a single Base for all models to inherit from
+# Line 13: # --- User and Role Enums ---
+# Line 15: # This is the UserRole enum that pydantic_models.py is trying to import.
+# Line 16: # It defines the allowed roles for users.
+# Line 22: # This is the VerificationStatus enum for the verification workflow.
+# Line 29: # --- Main User Table Model ---
+# Line 60: # ... (code from before, no changes needed here)
+# Line 83: # --- Report Table Model (from before) ---
+# Line 92: # Adding timestamp columns for completeness and consistency
+
+# =============================================================================
+# FILE: backend/app/db/session.py
+# =============================================================================
+# Line 5: # Create the asynchronous database engine using the URL from our settings.
+# Line 6: # `echo=True` is useful for debugging as it logs all SQL statements.
+# Line 9: # Create a configured "Session" class. This is a session factory.
+# Line 10: # expire_on_commit=False prevents attributes from being expired after commit.
+# Line 15: # --- This is the new dependency function that was missing ---
+# Line 16-25: """
+#     FastAPI dependency that provides a database session for each request.
+# 
+#     This function is an async generator that will:
+#     1. Create a new AsyncSession from our factory (AsyncSessionLocal).
+#     2. `yield` the session to the endpoint function that depends on it.
+#     3. Ensure the session is closed (`db.close()`) after the request is handled,
+#        wrapped in a try...finally block to guarantee cleanup even if errors occur.
+#     """
+
+# =============================================================================
+# FILE: backend/app/main.py
+# =============================================================================
+# Line 5: # Import the rabbitmq_service instance
+# Line 22: # Add these event handlers for startup and shutdown
+
+# =============================================================================
+# FILE: backend/app/models/pydantic_models.py
+# =============================================================================
+# Line 5: # We import the UserRole Enum directly from our database models.
+# Line 6: # This ensures that the API layer and the database layer always agree
+# Line 7: # on what the valid user roles are.
+# Line 10: # --- User Models ---
+# Line 12: # This model defines the data we expect when a new user registers through the API.
+# Line 13: # Pydantic will automatically validate the input:
+# Line 14: # - `email` must be a valid email format.
+# Line 15: # - `full_name` and `password` must be strings.
+# Line 16: # - `role` must be one of the exact strings: "citizen", "official", or "analyst".
+# Line 23: # This model defines the data we will send back to the client after a user is created.
+# Line 24: # It's a security best practice to have a separate model for output,
+# Line 25: # so we never accidentally expose sensitive data like the hashed password.
+# Line 34: # This configuration setting allows Pydantic to create this model
+# Line 35: # directly from a SQLAlchemy database object.
+# Line 39: # --- Token Model ---
+# Line 41: # This model defines the structure of the JWT token response when a user logs in.
+# Line 47: # --- Report Models (from previous steps, unchanged) ---
+# Line 49: # Defines the data expected when submitting a new hazard report.
+# Line 56: # Defines the response sent back after a report is accepted for processing.
+
+# =============================================================================
+# FILE: backend/app/services/rabbitmq_service.py
+# =============================================================================
+# Line 10-11: """Establishes a connection and a channel to RabbitMQ."""
+# Line 20-21: """Closes the channel and connection."""
+# Line 28-29: """Declares a queue and publishes a message to it."""
