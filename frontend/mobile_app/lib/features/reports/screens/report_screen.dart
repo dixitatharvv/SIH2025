@@ -1,5 +1,60 @@
+// import 'package:flutter/material.dart';
+// import '../../../widgets/app_header.dart';
+
+// class ReportScreen extends StatefulWidget {
+//   const ReportScreen({super.key});
+
+//   @override
+//   State<ReportScreen> createState() => _ReportScreenState();
+// }
+
+// class _ReportScreenState extends State<ReportScreen> {
+//   String? selectedIncidentType;
+//   final TextEditingController _descriptionController = TextEditingController();
+
+//   @override
+//   void dispose() {
+//     _descriptionController.dispose();
+//     super.dispose();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: const AppHeader(),
+//       backgroundColor: const Color(0xFFE6F3FF),
+//       body: SingleChildScrollView(
+//         child: Padding(
+//           padding: const EdgeInsets.all(16.0),
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               // Main Title Section
+//               _buildMainTitle(),
+//               const SizedBox(height: 32),
+
+//               // Hazard Report Details Card
+//               _buildHazardReportCard(),
+//               const SizedBox(height: 24),
+
+//               // Media Evidence Section
+//               _buildMediaEvidence(),
+//               const SizedBox(height: 24),
+
+//               // Voice Report Section
+//               _buildVoiceReport(),
+//               const SizedBox(height: 24),
+
+//               // Submit Report Section
+//               _buildSubmitSection(),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
 import 'package:flutter/material.dart';
-import '../../../widgets/app_header.dart';
+// Removed: import '../../../widgets/app_header.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
@@ -21,7 +76,7 @@ class _ReportScreenState extends State<ReportScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppHeader(),
+      // Removed: appBar: const AppHeader(),
       backgroundColor: const Color(0xFFE6F3FF),
       body: SingleChildScrollView(
         child: Padding(
@@ -54,6 +109,10 @@ class _ReportScreenState extends State<ReportScreen> {
     );
   }
 
+  // ...existing code for _buildMainTitle, _buildHazardReportCard, etc...
+
+
+//between this is the code which i have changed
   Widget _buildMainTitle() {
     return Row(
       children: [
