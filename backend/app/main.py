@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.api import api_router
 from app.core.config import settings
-# Import the rabbitmq_service instance
 from app.services.rabbitmq_service import rabbitmq_service
 
 app = FastAPI(
@@ -19,7 +18,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Add these event handlers for startup and shutdown
 @app.on_event("startup")
 async def startup_event():
     await rabbitmq_service.connect()

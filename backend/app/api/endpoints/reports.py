@@ -35,21 +35,17 @@ async def submit_hazard_report(
         "media_filename": media_filename,
     }
 
-    # --- ADDED ERROR HANDLING ---
     try:
         await rabbitmq_service.publish_message(
             queue_name="report_verification_queue", 
             message_body=message_body
         )
     except Exception as e:
-        # If anything goes wrong with RabbitMQ, we now see a clear error
         print(f"CRITICAL: Failed to publish message to RabbitMQ. Error: {e}")
-        # And we raise a proper server error instead of a fake success
         raise HTTPException(
             status_code=500, 
             detail="Could not publish report to processing queue."
         )
-    # ---------------------------
     
     return {
         "message": "Hazard report has been accepted for processing.",

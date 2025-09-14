@@ -6,6 +6,7 @@ uvicorn[standard]
 pydantic
 pydantic-settings
 python-dotenv
+pydantic[email]
 
 # Asynchronous Database Driver for PostgreSQL
 asyncpg
@@ -40,3 +41,7 @@ sqlalchemy[asyncio]
 asyncpg
 psycopg2-binary
 GeoAlchemy2
+
+# Security and Authentication
+passlib[bcrypt]
+python-jose[cryptography]

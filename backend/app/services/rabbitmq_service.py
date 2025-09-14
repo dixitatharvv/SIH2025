@@ -8,7 +8,6 @@ class RabbitMQService:
         self.channel = None
 
     async def connect(self):
-        """Establishes a connection and a channel to RabbitMQ."""
         try:
             self.connection = await aio_pika.connect_robust(settings.RABBITMQ_URL)
             self.channel = await self.connection.channel()
@@ -18,7 +17,6 @@ class RabbitMQService:
             raise
 
     async def close(self):
-        """Closes the channel and connection."""
         if self.channel:
             await self.channel.close()
         if self.connection:
@@ -26,7 +24,6 @@ class RabbitMQService:
         print("RabbitMQ connection closed.")
 
     async def publish_message(self, queue_name: str, message_body: dict):
-        """Declares a queue and publishes a message to it."""
         if not self.channel:
             raise ConnectionError("RabbitMQ channel is not available.")
             
