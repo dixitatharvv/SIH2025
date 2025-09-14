@@ -1,7 +1,7 @@
 first clone the repo 
 
 ```bash
-git clone https://github.com/atharvsgit/SIH2025.git
+git clone https://github.com/dixitatharvv/SIH2025.git
 cd SIH2025
 ```
 
