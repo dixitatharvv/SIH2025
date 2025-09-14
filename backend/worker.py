@@ -1,67 +1,95 @@
 import asyncio
 import aio_pika
 import json
+from datetime import datetime, timezone
+import uuid
 
-# The connection URL should be the same as in your FastAPI app.
-# For local development, this is the default.
+# Import database components we created
+from app.db.session import AsyncSessionLocal
+from app.db.models import Report, User  # We'll need the User model too
+
 RABBITMQ_URL = "amqp://guest:guest@localhost/"
 QUEUE_NAME = "report_verification_queue"
 
-async def main():
+async def create_dummy_user_if_not_exists(session):
     """
-    Connects to RabbitMQ and starts consuming messages from the queue.
+    For now, we need a user in the DB to associate reports with.
+    This function creates one if it doesn't exist.
+    In the future, the user_id will come from the authenticated user.
     """
-    print("Worker starting...")
-    print(f"Connecting to RabbitMQ at {RABBITMQ_URL}")
+    # A fixed UUID for our dummy user
+    dummy_user_uuid = uuid.UUID('00000000-0000-0000-0000-000000000000')
     
-    try:
-        connection = await aio_pika.connect_robust(RABBITMQ_URL)
-    except Exception as e:
-        print(f"Failed to connect to RabbitMQ: {e}")
-        return
+    # Use session.get() for a direct primary key lookup
+    user = await session.get(User, dummy_user_uuid)
+    
+    if not user:
+        print("Creating a dummy user for associating reports.")
+        user = User(
+            id=dummy_user_uuid,
+            email="dummyuser@pravaah.com",
+            full_name="Dummy User",
+            hashed_password="notarealpassword" # This should be properly hashed in a real app
+        )
+        session.add(user)
+        await session.commit()
+        
+    return user.id
 
+async def main():
+    print("Worker starting...")
+    connection = await aio_pika.connect_robust(RABBITMQ_URL)
+    
     async with connection:
-        # Creating a channel
         channel = await connection.channel()
-
-        # Declaring the queue. It's important to declare it here as well
-        # to ensure it exists before we try to consume from it.
-        # `durable=True` makes sure the queue survives a RabbitMQ restart.
         queue = await channel.declare_queue(QUEUE_NAME, durable=True)
-
         print("Worker is waiting for messages. To exit press CTRL+C")
 
-        # Start consuming messages from the queue
         async with queue.iterator() as queue_iter:
             async for message in queue_iter:
                 async with message.process():
-                    # The message body is in bytes, so we decode it.
                     message_body = message.body.decode()
+                    data = json.loads(message_body)
                     
-                    # We expect the body to be a JSON string.
-                    try:
-                        data = json.loads(message_body)
-                        print("\n[+] Received new message:")
-                        print(f"  - Report ID: {data.get('report_id')}")
-                        print(f"  - Hazard Type: {data['report_data'].get('hazard_type')}")
-                        print(f"  - Description: {data['report_data'].get('description')}")
-                        print(f"  - Location: ({data['report_data'].get('latitude')}, {data['report_data'].get('longitude')})")
-                        print(f"  - Media File: {data.get('media_filename') or 'N/A'}")
+                    print("\n[+] Received new message. Saving to database...")
+                    
+                    # --- DATABASE LOGIC ---
+                    # Get a new database session for this message
+                    async with AsyncSessionLocal() as session:
+                        try:
+                            # Ensure a dummy user exists to link the report to
+                            dummy_user_id = await create_dummy_user_if_not_exists(session)
+
+                            report_data = data['report_data']
+                            
+                            # Create a new Report object using our SQLAlchemy model
+                            new_report = Report(
+                                id=uuid.UUID(data['report_id']), # Convert string ID back to UUID object
+                                user_id=dummy_user_id,
+                                hazard_type=report_data['hazard_type'],
+                                description=report_data['description'],
+                                # Format for WKT (Well-Known Text) for PostGIS
+                                location=f"POINT({report_data['longitude']} {report_data['latitude']})",
+                                source='WebApp', # Hardcoded for now, could come from message
+                                # Use a real timestamp, ideally from the client
+                                reported_at=datetime.now(timezone.utc)
+                            )
+                            
+                            # Add the new report to the session and commit to the DB
+                            session.add(new_report)
+                            await session.commit()
+                            
+                            print(f"  - Successfully saved report {data['report_id']} to the database.")
                         
-                        # Here is where you will eventually add the logic to:
-                        # 1. Save the report to the PostgreSQL database.
-                        # 2. If there's a media file, process it (e.g., confirm S3 upload).
-                        # 3. Trigger the next steps (NLP, Weather API, etc.).
-
-                    except json.JSONDecodeError:
-                        print(f"\n[!] Received a message with invalid JSON: {message_body}")
-                    
-                    if queue.name in message.routing_key:
-                        print("Message processed successfully.")
-
+                        except Exception as e:
+                            print(f"\n[!] DATABASE ERROR: {e}")
+                            # If something goes wrong, rollback the transaction
+                            await session.rollback()
+                    # ----------------------
 
 if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print("Worker has been shut down.")
+        print("\nWorker has been shut down.")
+

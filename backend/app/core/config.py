@@ -2,14 +2,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     """
-    Manages application settings and environment variables.
+    Manages application settings by loading them from an .env file.
     """
+    # These are now all required fields that MUST be in the .env file.
     DATABASE_URL: str
     SECRET_KEY: str
-    
-    # Add the connection URL for our local RabbitMQ server
-    # The default guest:guest user is fine for local development.
-    RABBITMQ_URL: str = "amqp://guest:guest@localhost/"
+    RABBITMQ_URL: str # The default value has been removed.
     
     model_config = SettingsConfigDict(env_file=".env")
 

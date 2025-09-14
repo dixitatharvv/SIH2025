@@ -35,3 +35,8 @@ opencv-python-headless
 # Run: pip install black ruff pytest
 
 
+#Database ORM and PostgreSQL Driver
+sqlalchemy[asyncio]
+asyncpg
+psycopg2-binary
+GeoAlchemy2
