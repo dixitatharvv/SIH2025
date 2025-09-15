@@ -50,3 +50,5 @@ frontend/web_app/coverage/
 
 
 ai/config.py
+ai/since_id.txt
+ai/.venv
