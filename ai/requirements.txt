@@ -1,4 +1,7 @@
 tweepy
 openai
 psycopg2-binary
-requests
+langchain
+google-generativeai
+langchain-google-genai
+
