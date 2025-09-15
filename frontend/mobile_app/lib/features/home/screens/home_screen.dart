@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import '../widgets/current_location_card.dart';
-import '../widgets/reports_activity_card.dart';
+import '../widgets/recent_reports_card.dart';
 import '../widgets/risk_assessment_card.dart';
 import '../widgets/safety_recommendations_card.dart';
 import '../widgets/safe_places_card.dart';
-import '../widgets/emergency_contact_card.dart';
 import '../../reports/screens/report_screen.dart';
 import '../../../widgets/app_header.dart';
 
@@ -80,21 +79,19 @@ class HomeContent extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Main Title Section
-              _buildMainTitle(),
+              _buildMainTitle(context),
               const SizedBox(height: 32),
 
               // Content Cards
               const CurrentLocationCard(),
               const SizedBox(height: 16),
-              const ReportsActivityCard(),
+              const RecentReportsCard(),
               const SizedBox(height: 16),
               const RiskAssessmentCard(),
               const SizedBox(height: 16),
               const SafetyRecommendationsCard(),
               const SizedBox(height: 16),
               const SafePlacesCard(),
-              const SizedBox(height: 16),
-              const EmergencyContactCard(),
               const SizedBox(height: 80), // Space for bottom navigation
             ],
           ),
@@ -103,7 +100,7 @@ class HomeContent extends StatelessWidget {
     );
   }
 
-  Widget _buildMainTitle() {
+  Widget _buildMainTitle(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -144,27 +141,53 @@ class HomeContent extends StatelessWidget {
             ),
             const Spacer(),
 
-            // Dashboard Button
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFF3B82F6), width: 1.5),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
+            // SOS Button
+            GestureDetector(
+              onTap: () {
+                // TODO: Implement SOS functionality when backend is ready
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('SOS feature will be implemented with backend'),
+                    backgroundColor: Colors.red,
                   ),
-                ],
-              ),
-              child: const Text(
-                'Dashboard',
-                style: TextStyle(
-                  color: Color(0xFF3B82F6),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFDC2626), Color(0xFFEF4444)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFDC2626).withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.emergency,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      'SOS',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -172,48 +195,13 @@ class HomeContent extends StatelessWidget {
         ),
         const SizedBox(height: 16),
 
-        // Subtitle and GPS Status Row
-        Row(
-          children: [
-            const Expanded(
-              child: Text(
-                'Stay informed about current ocean conditions and safety alerts.',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color(0xFF64748B),
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
-
-            // GPS Status
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: const Color(0xFFDCFCE7),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFF22C55E), width: 1),
-              ),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.send,
-                    color: Color(0xFF22C55E),
-                    size: 16,
-                  ),
-                  SizedBox(width: 8),
-                  Text(
-                    'GPS Active',
-                    style: TextStyle(
-                      color: Color(0xFF22C55E),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+        // Subtitle
+        const Text(
+          'Stay informed about current ocean conditions and safety alerts.',
+          style: TextStyle(
+            fontSize: 16,
+            color: Color(0xFF64748B),
+          ),
         ),
       ],
     );

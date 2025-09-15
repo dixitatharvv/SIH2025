@@ -88,8 +88,8 @@ class _ReportScreenState extends State<ReportScreen> {
               _buildMainTitle(),
               const SizedBox(height: 32),
 
-              // Hazard Report Details Card
-              _buildHazardReportCard(),
+              // Incident Report Details Card
+              _buildIncidentReportCard(),
               const SizedBox(height: 24),
 
               // Media Evidence Section
@@ -121,7 +121,7 @@ class _ReportScreenState extends State<ReportScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Report Ocean Hazard',
+                'Report Incident',
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -143,26 +143,38 @@ class _ReportScreenState extends State<ReportScreen> {
 
         // GPS Status
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: const Color(0xFFDCFCE7),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: const Color(0xFF22C55E), width: 1),
+            gradient: const LinearGradient(
+              colors: [Color(0xFF10B981), Color(0xFF059669)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF10B981).withOpacity(0.25),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                Icons.send,
-                color: Color(0xFF22C55E),
-                size: 16,
+                Icons.location_on,
+                color: Colors.white,
+                size: 14,
               ),
-              SizedBox(width: 8),
+              SizedBox(width: 6),
               Text(
                 'GPS Active',
                 style: TextStyle(
-                  color: Color(0xFF22C55E),
-                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                  letterSpacing: 0.5,
                 ),
               ),
             ],
@@ -172,7 +184,7 @@ class _ReportScreenState extends State<ReportScreen> {
     );
   }
 
-  Widget _buildHazardReportCard() {
+  Widget _buildIncidentReportCard() {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -208,7 +220,7 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
               const SizedBox(width: 8),
               const Text(
-                'Hazard Report Details',
+                'Incident Report Details',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -316,8 +328,13 @@ class _ReportScreenState extends State<ReportScreen> {
             child: TextField(
               controller: _descriptionController,
               maxLines: 4,
+              style: const TextStyle(
+                color: Color(0xFF1E293B),
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
               decoration: const InputDecoration(
-                hintText: 'Describe the hazard in detail...',
+                hintText: 'Describe the incident in detail...',
                 hintStyle: TextStyle(color: Color(0xFF9CA3AF)),
                 border: InputBorder.none,
               ),
@@ -329,128 +346,198 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   Widget _buildMediaEvidence() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Media Evidence',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF1E293B),
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: const Color(0xFF3B82F6)),
-                ),
-                child: const Column(
-                  children: [
-                    Icon(
-                      Icons.camera_alt,
-                      color: Color(0xFF3B82F6),
-                      size: 24,
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Add Photos',
-                      style: TextStyle(
-                        color: Color(0xFF3B82F6),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: const Color(0xFF3B82F6)),
-                ),
-                child: const Column(
-                  children: [
-                    Icon(
-                      Icons.videocam,
-                      color: Color(0xFF3B82F6),
-                      size: 24,
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Add Videos',
-                      style: TextStyle(
-                        color: Color(0xFF3B82F6),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildVoiceReport() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Voice Report',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF1E293B),
-          ),
-        ),
-        const SizedBox(height: 16),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: const Color(0xFF3B82F6)),
-          ),
-          child: const Column(
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Section Header with blue highlight
+          Row(
             children: [
-              Icon(
-                Icons.mic,
-                color: Color(0xFF3B82F6),
-                size: 24,
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Start Voice Report',
-                style: TextStyle(
+              Container(
+                width: 4,
+                height: 24,
+                decoration: const BoxDecoration(
                   color: Color(0xFF3B82F6),
-                  fontWeight: FontWeight.w500,
+                  borderRadius: BorderRadius.all(Radius.circular(2)),
                 ),
               ),
-              SizedBox(height: 4),
-              Text(
-                'Describe the hazard',
+              const SizedBox(width: 12),
+              const Icon(
+                Icons.photo_library,
+                color: Color(0xFF3B82F6),
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              const Text(
+                'Media Evidence',
                 style: TextStyle(
-                  color: Color(0xFF64748B),
-                  fontSize: 12,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF1E293B),
                 ),
               ),
             ],
           ),
-        ),
-      ],
+          const SizedBox(height: 24),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF8FAFC),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFF3B82F6)),
+                  ),
+                  child: const Column(
+                    children: [
+                      Icon(
+                        Icons.camera_alt,
+                        color: Color(0xFF3B82F6),
+                        size: 24,
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Add Photos',
+                        style: TextStyle(
+                          color: Color(0xFF3B82F6),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF8FAFC),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFF3B82F6)),
+                  ),
+                  child: const Column(
+                    children: [
+                      Icon(
+                        Icons.videocam,
+                        color: Color(0xFF3B82F6),
+                        size: 24,
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Add Videos',
+                        style: TextStyle(
+                          color: Color(0xFF3B82F6),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildVoiceReport() {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Section Header with blue highlight
+          Row(
+            children: [
+              Container(
+                width: 4,
+                height: 24,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF3B82F6),
+                  borderRadius: BorderRadius.all(Radius.circular(2)),
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Icon(
+                Icons.mic,
+                color: Color(0xFF3B82F6),
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              const Text(
+                'Voice Report',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF1E293B),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          // Full width voice button (equivalent to combined width of Add Photos + Add Videos)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF8FAFC),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: const Color(0xFF3B82F6)),
+            ),
+            child: const Column(
+              children: [
+                Icon(
+                  Icons.mic,
+                  color: Color(0xFF3B82F6),
+                  size: 24,
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'Start Voice Report',
+                  style: TextStyle(
+                    color: Color(0xFF3B82F6),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'Describe the incident',
+                  style: TextStyle(
+                    color: Color(0xFF64748B),
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -458,28 +545,6 @@ class _ReportScreenState extends State<ReportScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Container(
-              width: 4,
-              height: 24,
-              decoration: const BoxDecoration(
-                color: Color(0xFF3B82F6),
-                borderRadius: BorderRadius.all(Radius.circular(2)),
-              ),
-            ),
-            const SizedBox(width: 12),
-            const Text(
-              'Submit Report',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF1E293B),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
         Column(
           children: [
             // Submit Button
