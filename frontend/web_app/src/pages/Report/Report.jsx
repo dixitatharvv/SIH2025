@@ -158,7 +158,7 @@ const Report = () => {
 
             {/* Incident Type - Full Width */}
             <div className="mb-8">
-              <label className="block text-sm font-medium text-gray-700 mb-3">
+              <label className="block text-sm font-medium text-gray-700 mb-3 text-left">
                 Incident Type *
               </label>
               <div className="relative">
@@ -187,7 +187,7 @@ const Report = () => {
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
+              <label className="block text-sm font-medium text-gray-700 mb-3 text-left">
                 Description *
               </label>
               <textarea
