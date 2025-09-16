@@ -45,3 +45,7 @@ GeoAlchemy2
 # Security and Authentication
 passlib[bcrypt]
 python-jose[cryptography]
+
+
+#s3
+boto3
