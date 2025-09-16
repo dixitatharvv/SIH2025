@@ -36,7 +36,7 @@ class RecentReportsCard extends StatelessWidget {
                 const Spacer(),
                 TextButton(
                   onPressed: () {
-                    // TODO: Navigate to all reports when backend is ready
+                  
                   },
                   child: const Text(
                     'View More',
@@ -57,7 +57,7 @@ class RecentReportsCard extends StatelessWidget {
               'Strong rip currents detected at North Beach. Swimmers advised to avoid the area until conditions improve.',
               'assets/images/rip_current.jpg',
               '2 hours ago',
-              'Marine Safety Team',
+              'Sarah Bhatt',
             ),
             const SizedBox(height: 12),
             _buildReportPost(
@@ -65,7 +65,7 @@ class RecentReportsCard extends StatelessWidget {
               'Large jellyfish bloom spotted near South Pier. Beachgoers should exercise caution when entering water.',
               'assets/images/jellyfish.jpg',
               '5 hours ago',
-              'Beach Patrol Unit',
+              'Ocean Watch Team',
             ),
             const SizedBox(height: 12),
             _buildReportPost(
@@ -96,7 +96,7 @@ class RecentReportsCard extends StatelessWidget {
         border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),

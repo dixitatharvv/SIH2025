@@ -17,15 +17,15 @@ class ReportsActivityCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header
-            Row(
+            const Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.description,
                   color: Color(0xFF1E3A8A),
                   size: 20,
                 ),
-                const SizedBox(width: 8),
-                const Text(
+                SizedBox(width: 8),
+                Text(
                   'Reports & Activity',
                   style: TextStyle(
                     fontSize: 16,
@@ -46,8 +46,8 @@ class ReportsActivityCard extends StatelessWidget {
                       color: const Color(0xFF3B82F6),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Column(
-                      children: const [
+                    child: const Column(
+                      children: [
                         Text(
                           '24',
                           style: TextStyle(
@@ -75,8 +75,8 @@ class ReportsActivityCard extends StatelessWidget {
                       color: Colors.green,
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Column(
-                      children: const [
+                    child: const Column(
+                      children: [
                         Text(
                           '18',
                           style: TextStyle(

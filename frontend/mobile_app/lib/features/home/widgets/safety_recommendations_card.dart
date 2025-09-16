@@ -17,15 +17,15 @@ class SafetyRecommendationsCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header
-            Row(
+            const Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.shield,
                   color: Color(0xFF1E3A8A),
                   size: 20,
                 ),
-                const SizedBox(width: 8),
-                const Text(
+                SizedBox(width: 8),
+                Text(
                   'Safety Recommendations',
                   style: TextStyle(
                     fontSize: 16,

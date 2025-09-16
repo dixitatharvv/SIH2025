@@ -17,15 +17,15 @@ class RiskAssessmentCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header
-            Row(
+            const Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.shield,
                   color: Color(0xFF1E3A8A),
                   size: 20,
                 ),
-                const SizedBox(width: 8),
-                const Text(
+                SizedBox(width: 8),
+                Text(
                   'Risk Assessment',
                   style: TextStyle(
                     fontSize: 16,
@@ -44,15 +44,15 @@ class RiskAssessmentCard extends StatelessWidget {
                 color: Colors.red,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Row(
+              child: const Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.warning,
                     color: Colors.white,
                     size: 24,
                   ),
-                  const SizedBox(width: 12),
-                  const Expanded(
+                  SizedBox(width: 12),
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -74,7 +74,7 @@ class RiskAssessmentCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const Text(
+                  Text(
                     '76%',
                     style: TextStyle(
                       color: Colors.white,

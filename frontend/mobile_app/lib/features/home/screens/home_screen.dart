@@ -6,6 +6,8 @@ import '../widgets/safety_recommendations_card.dart';
 import '../widgets/safe_places_card.dart';
 import '../../reports/screens/report_screen.dart';
 import '../../../widgets/app_header.dart';
+import '../../community/screens/community_screen.dart';
+import '../../profile/screens/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,10 +22,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = [
     const HomeContent(),
     const ReportScreen(),
-    const Center(
-        child: Text('Community Screen', style: TextStyle(color: Colors.white))),
-    const Center(
-        child: Text('Profile Screen', style: TextStyle(color: Colors.white))),
+    const CommunityScreen(),
+    const ProfileScreen(),
   ];
 
   @override
@@ -116,7 +116,7 @@ class HomeContent extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF3B82F6).withOpacity(0.3),
+                    color: const Color(0xFF3B82F6).withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
@@ -132,7 +132,7 @@ class HomeContent extends StatelessWidget {
 
             // App Name
             const Text(
-              'Pravah',
+              'Pravaah',
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
@@ -144,7 +144,6 @@ class HomeContent extends StatelessWidget {
             // SOS Button
             GestureDetector(
               onTap: () {
-                // TODO: Implement SOS functionality when backend is ready
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text('SOS feature will be implemented with backend'),
@@ -163,7 +162,7 @@ class HomeContent extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFDC2626).withOpacity(0.3),
+                      color: const Color(0xFFDC2626).withValues(alpha: 0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -173,7 +172,7 @@ class HomeContent extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      Icons.emergency,
+                      Icons.warning,
                       color: Colors.white,
                       size: 18,
                     ),
