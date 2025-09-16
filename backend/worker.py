@@ -23,52 +23,45 @@ async def process_report_message(message: AbstractIncomingMessage):
             media_files_data = body["media_files"]
 
             print(f"[+] Received initial report {report_id}. Saving to DB and dispatching.")
-            
+
             async for db in get_db():
-                # 1. Create the main Report record
                 new_report = Report(
                     id=report_id,
                     user_id=user_id,
                     user_hazard_type=HazardType(report_data["user_hazard_type"]),
                     user_description=report_data["user_description"],
                     user_location=f'SRID=4326;POINT({report_data["longitude"]} {report_data["latitude"]})'
-                    # The 'user_city' field will be populated later by a reverse geocoding process
                 )
                 db.add(new_report)
 
-                # 2. Create a Media record for each uploaded file
                 for media_data in media_files_data:
                     new_media = Media(
                         report_id=report_id,
                         file_url=media_data["file_url"],
                         media_type=MediaType(media_data["media_type"]),
-                        # The 'metadata' field will be populated later by a file processing worker
                     )
                     db.add(new_media)
-                
+
                 await db.commit()
                 print(f"  - Successfully saved report {report_id} and {len(media_files_data)} media file(s) to the database.")
 
-            # 3. Dispatch tasks to specialized verification queues ("Fan-Out")
-            # --- NLP Task ---
             nlp_message = {
                 "report_id": str(report_id),
                 "user_description": report_data["user_description"],
-                "media_files": media_files_data, # NLP might use images/audio
+                "media_files": media_files_data,
             }
             await rabbitmq_service.publish_message("nlp_queue", nlp_message)
             print(f"  - Dispatched task to nlp_queue for report {report_id}")
-            
-            # --- Weather Task ---
+
             weather_message = {
                 "report_id": str(report_id),
                 "latitude": report_data["latitude"],
                 "longitude": report_data["longitude"],
+                "user_hazard_type": report_data["user_hazard_type"]
             }
             await rabbitmq_service.publish_message("weather_queue", weather_message)
             print(f"  - Dispatched task to weather_queue for report {report_id}")
 
-            # --- Peer Notification Task ---
             peer_message = {
                 "report_id": str(report_id),
                 "latitude": report_data["latitude"],
@@ -77,25 +70,20 @@ async def process_report_message(message: AbstractIncomingMessage):
             }
             await rabbitmq_service.publish_message("peer_notification_queue", peer_message)
             print(f"  - Dispatched task to peer_notification_queue for report {report_id}")
-            
+
             print(f"[✔] Finished processing and dispatching for report {report_id}.")
 
         except Exception as e:
             print(f"[!] Error processing message: {e}")
-            # In a production system, you might want to move the message to a dead-letter queue
-            # instead of just dropping it.
 
 async def main():
     """Main function to connect to RabbitMQ and start the worker."""
     print("Starting Coordinator Worker...")
     await rabbitmq_service.connect()
-    
-    # This is the main processing queue that the API publishes to.
     await rabbitmq_service.consume_messages("report_processing_queue", process_report_message)
-    
+
     print("[*] Coordinator worker is running and waiting for reports...")
     try:
-        # Keep the worker running indefinitely
         await asyncio.Future()
     finally:
         await rabbitmq_service.close()
