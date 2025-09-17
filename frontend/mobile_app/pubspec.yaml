@@ -38,9 +38,6 @@ dependencies:
 
   # ---- Multi-language Support ----
   intl: ^0.19.0
-  
-  # ---- Environment Variables ----
-  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -50,7 +47,4 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
-  assets:
-    - .env
 

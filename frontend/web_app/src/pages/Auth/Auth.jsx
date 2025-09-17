@@ -116,7 +116,7 @@ const Auth = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-gradient-to-br from-sky-50 to-blue-100 flex">
+    <div className="h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] overflow-hidden bg-gradient-to-br from-sky-50 to-blue-100 flex">
       {/* Left Side - Pravaah Info */}
       <div className="hidden lg:flex lg:w-1/2 p-8 flex-col justify-center">
         <div className="w-full max-w-lg">

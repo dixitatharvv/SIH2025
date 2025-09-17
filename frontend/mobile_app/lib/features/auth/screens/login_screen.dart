@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_constants.dart';
+import '../services/auth_service.dart';
 import '../widgets/auth_header.dart';
 import '../widgets/auth_footer.dart';
 import 'signup_screen.dart';
@@ -33,8 +34,10 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      // TODO: Implement actual login logic with backend
-      await Future.delayed(const Duration(seconds: 2)); // Simulate API call
+      await AuthService().login(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
       
       if (mounted) {
         // Navigate to home screen on successful login

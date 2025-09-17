@@ -30,37 +30,59 @@ class AuthService {
     return null;
   }
 
-  // Login user
+  // Login user (OAuth2 password flow)
   Future<UserModel> login({
     required String email,
     required String password,
   }) async {
     try {
+      print('Attempting login to: ${AppConstants.baseUrl}/api/auth/login');
+      print('Email: $email');
+      
       final response = await http.post(
         Uri.parse('${AppConstants.baseUrl}/api/auth/login'),
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: json.encode({
-          'email': email,
+        body: {
+          // FastAPI OAuth2PasswordRequestForm expects 'username' and 'password'
+          'username': email,
           'password': password,
-        }),
+        },
       ).timeout(
         const Duration(milliseconds: AppConstants.apiTimeout),
       );
+      
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        final user = UserModel.fromJson(data['user']);
-        final token = data['token'];
+        final token = data['access_token'];
+        if (token == null) {
+          throw Exception('Invalid login response');
+        }
 
-        // Store token and user data
+        // Minimal user model until a user/me endpoint exists
+        final user = UserModel(
+          id: '',
+          email: email,
+          username: email.split('@').first,
+          role: 'citizen',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          isVerified: true,
+        );
+
         await _storeAuthData(token, user);
-        
         return user;
       } else {
-        final errorData = json.decode(response.body);
-        throw Exception(errorData['message'] ?? 'Login failed');
+        String message = 'Login failed';
+        try {
+          final errorData = json.decode(response.body);
+          message = errorData['detail'] ?? errorData['message'] ?? message;
+        } catch (_) {}
+        throw Exception(message);
       }
     } catch (e) {
       if (e.toString().contains('TimeoutException')) {
@@ -70,7 +92,7 @@ class AuthService {
     }
   }
 
-  // Register user
+  // Register user (matches backend schema and then logs in)
   Future<UserModel> register({
     required String email,
     required String username,
@@ -78,6 +100,9 @@ class AuthService {
     required String role,
   }) async {
     try {
+      print('Attempting registration to: ${AppConstants.baseUrl}/api/auth/register');
+      print('Email: $email, Username: $username, Role: $role');
+      
       final response = await http.post(
         Uri.parse('${AppConstants.baseUrl}/api/auth/register'),
         headers: {
@@ -85,26 +110,27 @@ class AuthService {
         },
         body: json.encode({
           'email': email,
-          'username': username,
+          'full_name': username,
           'password': password,
           'role': role.toLowerCase(),
         }),
       ).timeout(
         const Duration(milliseconds: AppConstants.apiTimeout),
       );
+      
+      print('Registration response status: ${response.statusCode}');
+      print('Registration response body: ${response.body}');
 
       if (response.statusCode == 201) {
-        final data = json.decode(response.body);
-        final user = UserModel.fromJson(data['user']);
-        final token = data['token'];
-
-        // Store token and user data
-        await _storeAuthData(token, user);
-        
-        return user;
+        // Auto-login after successful registration
+        return await login(email: email, password: password);
       } else {
-        final errorData = json.decode(response.body);
-        throw Exception(errorData['message'] ?? 'Registration failed');
+        String message = 'Registration failed';
+        try {
+          final errorData = json.decode(response.body);
+          message = errorData['detail'] ?? errorData['message'] ?? message;
+        } catch (_) {}
+        throw Exception(message);
       }
     } catch (e) {
       if (e.toString().contains('TimeoutException')) {
