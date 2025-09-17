@@ -56,12 +56,19 @@ const Navbar = () => {
 
           {/* Right side actions */}
           <div className="flex items-center space-x-4">
-            {isLoggedIn && (
+            {isLoggedIn ? (
               <button
                 onClick={handleSignOut}
                 className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-md text-sm font-medium transition-colors"
               >
                 Sign Out
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate('/auth')}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                Sign In/ Sign Up
               </button>
             )}
             <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md">

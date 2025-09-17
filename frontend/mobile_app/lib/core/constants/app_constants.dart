@@ -4,7 +4,10 @@ class AppConstants {
   static const String appVersion = '1.0.0';
 
   // API Configuration
-  static const String baseUrl = 'http://localhost:8000';
+  // For Android emulator, use 'http://10.0.2.2:8000' to connect to your PC's localhost
+  // For iOS simulator or physical device, use your PC's network IP address
+  static const String baseUrl = 'http://10.0.2.2:8000'; // Android emulator
+  // static const String baseUrl = 'http://YOUR_PC_IP:8000'; // Physical device
   static const int apiTimeout = 30000; // 30 seconds
 
   // UI Constants

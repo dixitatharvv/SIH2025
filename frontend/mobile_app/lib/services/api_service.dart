@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import '../core/constants/app_constants.dart';
 import '../models/report_model.dart';
 import '../models/location_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   static final ApiService _instance = ApiService._internal();
@@ -10,23 +11,38 @@ class ApiService {
   ApiService._internal();
 
   final String _baseUrl = AppConstants.baseUrl;
-  final Map<String, String> _headers = {
-    'Content-Type': 'application/json',
-  };
+  Future<Map<String, String>> _headers() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token');
+    return {
+      'Content-Type': 'application/json',
+      if (token != null) 'Authorization': 'Bearer $token',
+    };
+  }
 
   // Get all reports
   Future<List<ReportModel>> getReports() async {
     try {
       final response = await http
           .get(
-            Uri.parse('$_baseUrl/api/reports'),
-            headers: _headers,
+            Uri.parse('$_baseUrl/api/reports/hotspots'),
+            headers: await _headers(),
           )
           .timeout(const Duration(milliseconds: AppConstants.apiTimeout));
 
       if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        return data.map((json) => ReportModel.fromJson(json)).toList();
+        final Map<String, dynamic> data = json.decode(response.body);
+        final List<dynamic> items = data['items'] ?? [];
+        // Reuse ReportModel minimally: map hotspot to a report-like model
+        return items.map((h) => ReportModel.fromJson({
+          'id': h['report_id'],
+          'latitude': h['latitude'],
+          'longitude': h['longitude'],
+          'confidence': h['confidence'],
+          'status': h['status'],
+          'hazardType': h['hazard_type'],
+          'createdAt': h['created_at'],
+        })).toList();
       } else {
         throw Exception('Failed to load reports');
       }
@@ -40,13 +56,13 @@ class ApiService {
     try {
       final response = await http
           .post(
-            Uri.parse('$_baseUrl/api/reports'),
-            headers: _headers,
+            Uri.parse('$_baseUrl/api/reports/submit'),
+            headers: await _headers(),
             body: json.encode(report.toJson()),
           )
           .timeout(const Duration(milliseconds: AppConstants.apiTimeout));
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 202 || response.statusCode == 201) {
         return ReportModel.fromJson(json.decode(response.body));
       } else {
         throw Exception('Failed to create report');

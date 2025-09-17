@@ -1,7 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { MapPin, Waves, Shield, Phone, Navigation, AlertTriangle, CheckCircle, Users, Clock, Star, Anchor, Cross } from 'lucide-react';
+import MapView from '../../components/MapView.jsx';
+import { fetchHotspots } from '../../services/hotspotService.js';
 
 const Home = () => {
+  const [hotspots, setHotspots] = useState([]);
+  const [loadingHotspots, setLoadingHotspots] = useState(true);
+  const [hotspotError, setHotspotError] = useState('');
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const items = await fetchHotspots();
+        if (mounted) setHotspots(items);
+      } catch (e) {
+        if (mounted) setHotspotError('Failed to load hotspots');
+      } finally {
+        if (mounted) setLoadingHotspots(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
   return (
     <div className="min-h-screen bg-sky-100 py-8 px-4">
       <div className="max-w-6xl mx-auto">
@@ -40,36 +61,21 @@ const Home = () => {
             </div>
             
             {/* Map Container */}
-            <div className="h-64 bg-sky-200 rounded-lg border-2 border-slate-300 relative overflow-hidden">
-              {/* Map Background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-sky-200 to-sky-300"></div>
-              
-              {/* Location Marker */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                <div className="w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow-lg"></div>
-              </div>
-              
-              {/* Location Info Card */}
-              <div className="absolute bottom-4 left-4 bg-white rounded-lg p-3 shadow-md">
-                <div className="flex items-center text-blue-600 mb-1">
-                  <Navigation className="w-4 h-4 mr-1" />
-                  <span className="text-sm font-medium">Pacific Coast Beach</span>
-                </div>
-                <p className="text-xs text-gray-600">37.8651° N, 119.5383° W</p>
-              </div>
-              
-              {/* Legend */}
-              <div className="absolute top-4 right-4 bg-white rounded-lg p-3 shadow-md">
-                <div className="space-y-2">
-                  <div className="flex items-center text-xs">
-                    <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
-                    <span>Your Location</span>
-                  </div>
-                  <div className="flex items-center text-xs">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                    <span>Ocean</span>
-                  </div>
-                </div>
+            <div className="h-64 rounded-lg border-2 border-slate-300 overflow-hidden">
+              <div className="relative h-full">
+                {hotspotError ? (
+                  <div className="absolute inset-0 flex items-center justify-center text-sm text-red-600 bg-red-50">{hotspotError}</div>
+                ) : null}
+                <MapView
+                  height="256px"
+                  center={[19.0760, 72.8777]}
+                  zoom={11}
+                  markers={[{ position: [19.0760, 72.8777], popup: 'You are here' }]}
+                  hotspots={hotspots}
+                />
+                {loadingHotspots ? (
+                  <div className="absolute bottom-2 left-2 bg-white/80 text-gray-700 text-xs px-2 py-1 rounded">Loading hotspots…</div>
+                ) : null}
               </div>
             </div>
           </div>
@@ -96,19 +102,17 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="pr-24 mb-4">
-                  <h3 className="font-bold text-gray-900 text-lg leading-tight">Severe Rip Current Alert</h3>
+                  <h3 className="font-bold text-gray-900 text-lg leading-tight">Coastal Flooding Alert</h3>
                 </div>
                 <p className="text-gray-700 text-base mb-6 leading-relaxed">
-                  Strong rip currents detected at North Beach. Swimmers advised to avoid the area until conditions improve.
+                  Severe coastal flooding reported in low-lying areas. Residents advised to move to higher ground immediately.
                 </p>
-                <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center mb-6 hover:from-gray-50 hover:to-gray-150 transition-colors duration-200 flex-grow">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-gray-400 rounded-xl mx-auto mb-3 flex items-center justify-center shadow-md">
-                      <span className="text-white text-2xl">📷</span>
-                    </div>
-                    <p className="text-sm text-gray-600 font-medium">Image will load from backend</p>
-                    <p className="text-xs text-gray-500 mt-1">Click to upload or view image</p>
-                  </div>
+                <div className="h-48 rounded-xl overflow-hidden mb-6 flex-grow">
+                  <img 
+                    src="/src/assets/flooding.jpg" 
+                    alt="Coastal flooding" 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
                   <div className="flex items-center">
@@ -136,19 +140,17 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="pr-24 mb-4">
-                  <h3 className="font-bold text-gray-900 text-lg leading-tight">Jellyfish Bloom Warning</h3>
+                  <h3 className="font-bold text-gray-900 text-lg leading-tight">Flash Flood Warning</h3>
                 </div>
                 <p className="text-gray-700 text-base mb-6 leading-relaxed">
-                  Large jellyfish bloom spotted near South Pier. Beachgoers should exercise caution when entering water.
+                  Heavy rainfall causing flash floods in urban areas. Avoid driving through flooded streets and seek shelter.
                 </p>
-                <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center mb-6 hover:from-gray-50 hover:to-gray-150 transition-colors duration-200 flex-grow">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-gray-400 rounded-xl mx-auto mb-3 flex items-center justify-center shadow-md">
-                      <span className="text-white text-2xl">📷</span>
-                    </div>
-                    <p className="text-sm text-gray-600 font-medium">Image will load from backend</p>
-                    <p className="text-xs text-gray-500 mt-1">Click to upload or view image</p>
-                  </div>
+                <div className="h-48 rounded-xl overflow-hidden mb-6 flex-grow">
+                  <img 
+                    src="/src/assets/flooding2.jpg" 
+                    alt="Flash flood" 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
                   <div className="flex items-center">
@@ -176,19 +178,17 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="pr-24 mb-4">
-                  <h3 className="font-bold text-gray-900 text-lg leading-tight">High Tide Advisory</h3>
+                  <h3 className="font-bold text-gray-900 text-lg leading-tight">River Flood Alert</h3>
                 </div>
                 <p className="text-gray-700 text-base mb-6 leading-relaxed">
-                  Unusually high tides expected this evening. Coastal areas may experience temporary flooding.
+                  River levels rising rapidly due to upstream rainfall. Evacuation orders issued for riverside communities.
                 </p>
-                <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center mb-6 hover:from-gray-50 hover:to-gray-150 transition-colors duration-200 flex-grow">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-gray-400 rounded-xl mx-auto mb-3 flex items-center justify-center shadow-md">
-                      <span className="text-white text-2xl">📷</span>
-                    </div>
-                    <p className="text-sm text-gray-600 font-medium">Image will load from backend</p>
-                    <p className="text-xs text-gray-500 mt-1">Click to upload or view image</p>
-                  </div>
+                <div className="h-48 rounded-xl overflow-hidden mb-6 flex-grow">
+                  <img 
+                    src="/src/assets/flooding3.jpg" 
+                    alt="River flood" 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
                   <div className="flex items-center">
