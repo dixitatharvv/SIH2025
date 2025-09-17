@@ -51,5 +51,3 @@ class RabbitMQService:
         print(f"[*] Started consuming from queue: {queue_name}")
 
 rabbitmq_service = RabbitMQService()
-
-

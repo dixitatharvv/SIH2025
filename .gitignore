@@ -50,3 +50,6 @@ frontend/web_app/yarn-error.log*
 frontend/web_app/coverage/
 
 ai/youtube-scraper/.env
+ai/.env
+ai/twitter-scraper/.env
+ai/twitter-scraper/config.py

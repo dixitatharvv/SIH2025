@@ -58,4 +58,3 @@ async def submit_hazard_report(
         raise HTTPException(status_code=500, detail="Could not queue report for processing.")
 
     return {"message": "Hazard report has been accepted for processing.", "report_id": report_id}
-
