@@ -167,7 +167,7 @@ const Report = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-1 text-left">Report Ocean Hazard</h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-1 text-left">Report Ocean Incident</h1>
               <p className="text-slate-600">Help keep our waters safe by reporting incidents</p>
             </div>
             
@@ -183,11 +183,11 @@ const Report = () => {
           {/* Main Content - Left Side */}
           <div className="flex-1">
             <form id="report-form" onSubmit={handleSubmit} className="space-y-6">
-          {/* Hazard Report Details Card */}
+          {/* Incident Report Details Card */}
           <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="flex items-center mb-6">
               <AlertTriangle className="w-5 h-5 text-blue-600 mr-3" />
-              <h2 className="text-lg font-semibold text-gray-800">Hazard Report Details</h2>
+              <h2 className="text-lg font-semibold text-gray-800">Incident Report Details</h2>
             </div>
 
             {/* Incident Type - Full Width */}
