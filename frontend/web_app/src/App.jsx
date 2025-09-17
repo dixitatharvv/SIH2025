@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import Report from './pages/Report';
@@ -9,11 +9,12 @@ import Auth from './pages/Auth';
 import './App.css';
 
 function App() {
+  const isLoggedIn = Boolean(localStorage.getItem('authToken'));
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
+          <Route index element={isLoggedIn ? <Home /> : <Navigate to="/auth" replace />} />
           <Route path="report" element={<Report />} />
           <Route path="community" element={<Community />} />
           <Route path="profile" element={<Profile />} />

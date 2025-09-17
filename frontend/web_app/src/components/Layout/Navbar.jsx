@@ -1,9 +1,5 @@
 import React from 'react';
-<<<<<<< HEAD
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-=======
-import { Link, useLocation } from 'react-router-dom';
->>>>>>> f1b43108805123c9ffd91137ac700c745ee2a837
 import { Home, FileText, Users, User, Bell, Settings, Languages } from 'lucide-react';
 
 const Navbar = () => {
@@ -60,30 +56,14 @@ const Navbar = () => {
 
           {/* Right side actions */}
           <div className="flex items-center space-x-4">
-<<<<<<< HEAD
-            {isLoggedIn ? (
+            {isLoggedIn && (
               <button
                 onClick={handleSignOut}
                 className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-md text-sm font-medium transition-colors"
               >
                 Sign Out
               </button>
-            ) : (
-              <Link
-                to="/auth"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                Login / Sign Up
-              </Link>
             )}
-=======
-            <Link
-              to="/auth"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-            >
-              Login / Sign Up
-            </Link>
->>>>>>> f1b43108805123c9ffd91137ac700c745ee2a837
             <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md">
               <Languages className="w-5 h-5" />
             </button>
