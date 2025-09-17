@@ -1,265 +1,277 @@
 import React, { useState } from 'react';
-import { User, Settings, Bell, Shield, MapPin, Calendar, Award } from 'lucide-react';
+import { MapPin, Calendar, Phone, TrendingUp, Activity, Camera } from 'lucide-react';
 
 const Profile = () => {
-  const [activeTab, setActiveTab] = useState('overview');
-
-  const userStats = {
-    reportsSubmitted: 23,
-    reportsVerified: 18,
-    communityPoints: 450,
-    memberSince: 'January 2024'
-  };
+  const [activeTab, setActiveTab] = useState('Overview');
 
   const recentActivity = [
-    { id: 1, type: 'report', title: 'Pothole reported on Main St', date: '2 days ago', status: 'verified' },
-    { id: 2, type: 'community', title: 'Joined Environmental Action group', date: '1 week ago', status: 'active' },
-    { id: 3, type: 'report', title: 'Street light outage reported', date: '2 weeks ago', status: 'resolved' }
+    { 
+      id: 1, 
+      type: 'verified', 
+      title: 'Verified rip current report at Sunset Beach', 
+      time: '2 hours ago',
+      color: 'green'
+    },
+    { 
+      id: 2, 
+      type: 'helped', 
+      title: 'Helped 3 users with safety questions in forum', 
+      time: '1 day ago',
+      color: 'blue'
+    },
+    { 
+      id: 3, 
+      type: 'submitted', 
+      title: 'Submitted marine debris report', 
+      time: '3 days ago',
+      color: 'orange'
+    },
+    { 
+      id: 4, 
+      type: 'earned', 
+      title: 'Earned "Community Helper" badge', 
+      time: '5 days ago',
+      color: 'purple'
+    },
+    { 
+      id: 5, 
+      type: 'completed', 
+      title: 'Completed safety training module', 
+      time: '1 week ago',
+      color: 'teal'
+    },
+    { 
+      id: 6, 
+      type: 'joined', 
+      title: 'Joined beach cleanup event', 
+      time: '1 week ago',
+      color: 'blue'
+    }
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-sky-100">
+      <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Profile Header */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <div className="flex items-center space-x-6">
-            <div className="w-24 h-24 bg-gray-300 rounded-full flex items-center justify-center">
-              <User className="w-12 h-12 text-gray-600" />
+        <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
+          <div className="flex items-start space-x-6">
+            <div className="relative">
+              <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center">
+                <span className="text-2xl font-bold text-blue-600">SC</span>
+              </div>
+              <button className="absolute bottom-0 right-0 w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
+                <Camera className="w-4 h-4 text-white" />
+              </button>
             </div>
             <div className="flex-1">
-              <h1 className="text-3xl font-bold text-gray-900">John Doe</h1>
-              <p className="text-gray-600">john.doe@example.com</p>
-              <div className="flex items-center mt-2 space-x-4">
-                <span className="flex items-center text-sm text-gray-500">
+              <h1 className="text-3xl font-bold text-gray-900 mb-1 text-left">Sarah Bhatt</h1>
+              <p className="text-lg text-gray-600 mb-3 text-left">Ocean Safety Enthusiast</p>
+              <div className="flex items-center space-x-6 text-sm text-gray-500 mb-6">
+                <span className="flex items-center">
                   <MapPin className="w-4 h-4 mr-1" />
-                  New York, NY
+                  Mumbai, Maharashtra
                 </span>
-                <span className="flex items-center text-sm text-gray-500">
+                <span className="flex items-center">
                   <Calendar className="w-4 h-4 mr-1" />
-                  Member since {userStats.memberSince}
+                  Joined Jan 2025
                 </span>
               </div>
+              {/* Statistics */}
+              <div className="grid grid-cols-6 gap-8">
+                <div className="text-left">
+                  <div className="text-3xl font-bold text-blue-600 mb-1">23</div>
+                  <div className="text-sm text-gray-600">Total Reports</div>
+                </div>
+                <div className="text-left">
+                  <div className="text-3xl font-bold text-green-600 mb-1">18</div>
+                  <div className="text-sm text-gray-600">Verified</div>
+                </div>
+                <div className="text-left">
+                  <div className="text-3xl font-bold text-orange-600 mb-1">4.8</div>
+                  <div className="text-sm text-gray-600">Safety Rating</div>
+                </div>
+                <div className="text-left">
+                  <div className="text-3xl font-bold text-purple-600 mb-1">156</div>
+                  <div className="text-sm text-gray-600">Community Helps</div>
+                </div>
+                <div className="text-left">
+                  <div className="text-3xl font-bold text-cyan-600 mb-1">2.4K</div>
+                  <div className="text-sm text-gray-600">Forum Views</div>
+                </div>
+                <div className="text-left">
+                  <div className="text-3xl font-bold text-indigo-600 mb-1">12</div>
+                  <div className="text-sm text-gray-600">Badges Earned</div>
+                </div>
+              </div>
             </div>
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-              Edit Profile
-            </button>
-          </div>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          <div className="bg-white rounded-lg shadow-sm p-6 text-center">
-            <div className="text-2xl font-bold text-blue-600">{userStats.reportsSubmitted}</div>
-            <div className="text-sm text-gray-600">Reports Submitted</div>
-          </div>
-          <div className="bg-white rounded-lg shadow-sm p-6 text-center">
-            <div className="text-2xl font-bold text-green-600">{userStats.reportsVerified}</div>
-            <div className="text-sm text-gray-600">Reports Verified</div>
-          </div>
-          <div className="bg-white rounded-lg shadow-sm p-6 text-center">
-            <div className="text-2xl font-bold text-purple-600">{userStats.communityPoints}</div>
-            <div className="text-sm text-gray-600">Community Points</div>
-          </div>
-          <div className="bg-white rounded-lg shadow-sm p-6 text-center">
-            <Award className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
-            <div className="text-sm text-gray-600">Active Contributor</div>
           </div>
         </div>
 
         {/* Tab Navigation */}
         <div className="bg-white rounded-lg shadow-sm mb-6">
           <div className="flex border-b">
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`px-6 py-3 font-medium ${
-                activeTab === 'overview'
-                  ? 'text-blue-600 border-b-2 border-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              Overview
-            </button>
-            <button
-              onClick={() => setActiveTab('activity')}
-              className={`px-6 py-3 font-medium ${
-                activeTab === 'activity'
-                  ? 'text-blue-600 border-b-2 border-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              Activity
-            </button>
-            <button
-              onClick={() => setActiveTab('settings')}
-              className={`px-6 py-3 font-medium ${
-                activeTab === 'settings'
-                  ? 'text-blue-600 border-b-2 border-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              Settings
-            </button>
+            {['Overview', 'Reports', 'Badges', 'Rewards'].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-6 py-4 font-medium ${
+                  activeTab === tab
+                    ? 'text-blue-600 border-b-2 border-blue-600'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
           </div>
         </div>
 
         {/* Tab Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            {activeTab === 'overview' && (
-              <div className="space-y-6">
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
-                  <div className="space-y-4">
-                    {recentActivity.map((activity) => (
-                      <div key={activity.id} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div>
-                          <p className="font-medium">{activity.title}</p>
-                          <p className="text-sm text-gray-600">{activity.date}</p>
-                        </div>
-                        <span className={`px-2 py-1 rounded-full text-xs ${
-                          activity.status === 'verified' ? 'bg-green-100 text-green-800' :
-                          activity.status === 'resolved' ? 'bg-blue-100 text-blue-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          {activity.status}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'activity' && (
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h3 className="text-lg font-semibold mb-4">All Activity</h3>
-                <div className="space-y-4">
-                  {recentActivity.map((activity) => (
-                    <div key={activity.id} className="border-l-4 border-blue-500 pl-4 py-2">
-                      <p className="font-medium">{activity.title}</p>
-                      <p className="text-sm text-gray-600">{activity.date}</p>
-                      <span className={`inline-block mt-1 px-2 py-1 rounded-full text-xs ${
-                        activity.status === 'verified' ? 'bg-green-100 text-green-800' :
-                        activity.status === 'resolved' ? 'bg-blue-100 text-blue-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
-                        {activity.status}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'settings' && (
-              <div className="space-y-6">
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h3 className="text-lg font-semibold mb-4">Account Settings</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Display Name
-                      </label>
-                      <input 
-                        type="text" 
-                        defaultValue="John Doe"
-                        className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Email
-                      </label>
-                      <input 
-                        type="email" 
-                        defaultValue="john.doe@example.com"
-                        className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Location
-                      </label>
-                      <input 
-                        type="text" 
-                        defaultValue="New York, NY"
-                        className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h3 className="text-lg font-semibold mb-4">Notification Preferences</h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">Email Notifications</p>
-                        <p className="text-sm text-gray-600">Receive updates via email</p>
-                      </div>
-                      <input type="checkbox" defaultChecked className="h-4 w-4 text-blue-600" />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">Push Notifications</p>
-                        <p className="text-sm text-gray-600">Receive push notifications</p>
-                      </div>
-                      <input type="checkbox" defaultChecked className="h-4 w-4 text-blue-600" />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">Community Updates</p>
-                        <p className="text-sm text-gray-600">Get notified about community activity</p>
-                      </div>
-                      <input type="checkbox" className="h-4 w-4 text-blue-600" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Sidebar */}
+        {activeTab === 'Overview' && (
           <div className="space-y-6">
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h3 className="font-semibold mb-4">Quick Actions</h3>
-              <div className="space-y-3">
-                <button className="w-full flex items-center space-x-3 p-3 text-left hover:bg-gray-50 rounded-lg">
-                  <Settings className="w-5 h-5 text-gray-600" />
-                  <span>Account Settings</span>
-                </button>
-                <button className="w-full flex items-center space-x-3 p-3 text-left hover:bg-gray-50 rounded-lg">
-                  <Bell className="w-5 h-5 text-gray-600" />
-                  <span>Notifications</span>
-                </button>
-                <button className="w-full flex items-center space-x-3 p-3 text-left hover:bg-gray-50 rounded-lg">
-                  <Shield className="w-5 h-5 text-gray-600" />
-                  <span>Privacy & Security</span>
-                </button>
+            {/* Three Column Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Safety Score */}
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <div className="flex items-center mb-4">
+                  <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                  <h3 className="text-lg font-semibold">Safety Score</h3>
+                </div>
+                <div className="mb-4">
+                  <div className="text-2xl font-bold text-green-600 mb-2">4.8/5.0</div>
+                  <div className="text-sm text-gray-600 mb-3">Overall Safety Rating</div>
+                  <div className="w-full bg-gray-200 rounded-full h-3">
+                    <div className="bg-blue-500 h-3 rounded-full" style={{width: '96%'}}></div>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-600">
+                  Based on report accuracy, community help, and safety practices
+                </p>
+              </div>
+
+              {/* Emergency Contacts */}
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <div className="flex items-center mb-4">
+                  <Phone className="w-5 h-5 text-red-600 mr-2" />
+                  <h3 className="text-lg font-semibold">Emergency Contacts</h3>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-700">Coast Guard</span>
+                    <span className="text-blue-600 font-medium">911</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-700">Beach Patrol</span>
+                    <span className="text-blue-600 font-medium">(555) 123-4567</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-700">Personal Emergency</span>
+                    <span className="text-blue-600 font-medium">(555) 987-6543</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* This Month */}
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <div className="flex items-center mb-4">
+                  <TrendingUp className="w-5 h-5 text-purple-600 mr-2" />
+                  <h3 className="text-lg font-semibold">This Month</h3>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Reports Filed</span>
+                    <span className="text-2xl font-bold text-blue-600">5</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Forum Posts</span>
+                    <span className="text-2xl font-bold text-green-600">12</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Helps Given</span>
+                    <span className="text-2xl font-bold text-purple-600">23</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Safety Points</span>
+                    <span className="text-2xl font-bold text-orange-600">+245</span>
+                  </div>
+                </div>
               </div>
             </div>
 
+            {/* Recent Activity */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h3 className="font-semibold mb-4">Achievements</h3>
-              <div className="space-y-3">
-                <div className="flex items-center space-x-3">
-                  <Award className="w-6 h-6 text-yellow-500" />
-                  <div>
-                    <p className="font-medium">First Report</p>
-                    <p className="text-sm text-gray-600">Submitted your first report</p>
+              <div className="flex items-center mb-6">
+                <Activity className="w-5 h-5 text-blue-600 mr-2" />
+                <h3 className="text-lg font-semibold">Recent Activity</h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="flex items-start space-x-3 p-4 bg-green-50 rounded-lg">
+                  <div className="w-3 h-3 bg-green-500 rounded-full mt-2"></div>
+                  <div className="flex-1">
+                    <p className="text-gray-900 font-medium">Verified rip current report at Sunset Beach</p>
+                    <p className="text-sm text-gray-500">2 hours ago</p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <Award className="w-6 h-6 text-blue-500" />
-                  <div>
-                    <p className="font-medium">Community Helper</p>
-                    <p className="text-sm text-gray-600">Verified 10+ reports</p>
+                <div className="flex items-start space-x-3 p-4 bg-blue-50 rounded-lg">
+                  <div className="w-3 h-3 bg-blue-500 rounded-full mt-2"></div>
+                  <div className="flex-1">
+                    <p className="text-gray-900 font-medium">Helped 3 users with safety questions in forum</p>
+                    <p className="text-sm text-gray-500">1 day ago</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3 p-4 bg-orange-50 rounded-lg">
+                  <div className="w-3 h-3 bg-orange-500 rounded-full mt-2"></div>
+                  <div className="flex-1">
+                    <p className="text-gray-900 font-medium">Submitted marine debris report</p>
+                    <p className="text-sm text-gray-500">3 days ago</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3 p-4 bg-purple-50 rounded-lg">
+                  <div className="w-3 h-3 bg-purple-500 rounded-full mt-2"></div>
+                  <div className="flex-1">
+                    <p className="text-gray-900 font-medium">Earned "Community Helper" badge</p>
+                    <p className="text-sm text-gray-500">5 days ago</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3 p-4 bg-teal-50 rounded-lg">
+                  <div className="w-3 h-3 bg-teal-500 rounded-full mt-2"></div>
+                  <div className="flex-1">
+                    <p className="text-gray-900 font-medium">Completed safety training module</p>
+                    <p className="text-sm text-gray-500">1 week ago</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3 p-4 bg-blue-50 rounded-lg">
+                  <div className="w-3 h-3 bg-blue-500 rounded-full mt-2"></div>
+                  <div className="flex-1">
+                    <p className="text-gray-900 font-medium">Joined beach cleanup event</p>
+                    <p className="text-sm text-gray-500">1 week ago</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
+
+        {activeTab === 'Reports' && (
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <h3 className="text-lg font-semibold mb-4">Reports</h3>
+            <p className="text-gray-600">Reports content will be displayed here.</p>
+          </div>
+        )}
+
+        {activeTab === 'Badges' && (
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <h3 className="text-lg font-semibold mb-4">Badges</h3>
+            <p className="text-gray-600">Badges content will be displayed here.</p>
+          </div>
+        )}
+
+        {activeTab === 'Rewards' && (
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <h3 className="text-lg font-semibold mb-4">Rewards</h3>
+            <p className="text-gray-600">Rewards content will be displayed here.</p>
+          </div>
+        )}
       </div>
     </div>
   );
