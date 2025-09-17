@@ -91,7 +91,7 @@ const Community = () => {
         {/* Header */}
         <div className="flex justify-between items-start mb-6">
           <div className="text-left">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2 text-left">Community Forum</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-1 text-left">Community Forum</h1>
             <p className="text-gray-600 text-left">Connect, share experiences, and stay safe together</p>
           </div>
           <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 font-medium">

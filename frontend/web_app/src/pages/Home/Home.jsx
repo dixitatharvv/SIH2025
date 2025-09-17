@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Waves, Shield, Phone, Navigation, AlertTriangle, CheckCircle, Users } from 'lucide-react';
+import { MapPin, Waves, Shield, Phone, Navigation, AlertTriangle, CheckCircle, Users, Clock, Star, Anchor, Cross } from 'lucide-react';
 
 const Home = () => {
   return (
@@ -7,10 +7,10 @@ const Home = () => {
       <div className="max-w-6xl mx-auto">
         {/* Main Title Section */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-2">
             {/* App Logo and Name */}
             <div className="flex items-center">
-              <h1 className="text-4xl font-bold text-slate-800">Dashboard</h1>
+              <h1 className="text-3xl font-bold text-gray-900 text-left">Dashboard</h1>
             </div>
             {/* SOS Button */}
             <button className="bg-gradient-to-r from-red-600 to-red-500 text-white px-6 py-3 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-200 flex items-center space-x-2">
@@ -86,9 +86,9 @@ const Home = () => {
               </button>
             </div>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 items-start">
               {/* Report 1 */}
-              <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 relative">
+              <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 relative flex flex-col h-full">
                 <div className="absolute top-4 right-4 z-10">
                   <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-2 rounded-full text-sm font-semibold flex items-center shadow-md">
                     <CheckCircle className="w-4 h-4 mr-1" />
@@ -101,7 +101,7 @@ const Home = () => {
                 <p className="text-gray-700 text-base mb-6 leading-relaxed">
                   Strong rip currents detected at North Beach. Swimmers advised to avoid the area until conditions improve.
                 </p>
-                <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center mb-6 hover:from-gray-50 hover:to-gray-150 transition-colors duration-200">
+                <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center mb-6 hover:from-gray-50 hover:to-gray-150 transition-colors duration-200 flex-grow">
                   <div className="text-center">
                     <div className="w-16 h-16 bg-gray-400 rounded-xl mx-auto mb-3 flex items-center justify-center shadow-md">
                       <span className="text-white text-2xl">📷</span>
@@ -110,7 +110,7 @@ const Home = () => {
                     <p className="text-xs text-gray-500 mt-1">Click to upload or view image</p>
                   </div>
                 </div>
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
                   <div className="flex items-center">
                     <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
                       <Users className="w-4 h-4 text-blue-600" />
@@ -128,7 +128,7 @@ const Home = () => {
               </div>
 
               {/* Report 2 */}
-              <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 relative">
+              <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 relative flex flex-col h-full">
                 <div className="absolute top-4 right-4 z-10">
                   <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-2 rounded-full text-sm font-semibold flex items-center shadow-md">
                     <CheckCircle className="w-4 h-4 mr-1" />
@@ -141,7 +141,7 @@ const Home = () => {
                 <p className="text-gray-700 text-base mb-6 leading-relaxed">
                   Large jellyfish bloom spotted near South Pier. Beachgoers should exercise caution when entering water.
                 </p>
-                <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center mb-6 hover:from-gray-50 hover:to-gray-150 transition-colors duration-200">
+                <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center mb-6 hover:from-gray-50 hover:to-gray-150 transition-colors duration-200 flex-grow">
                   <div className="text-center">
                     <div className="w-16 h-16 bg-gray-400 rounded-xl mx-auto mb-3 flex items-center justify-center shadow-md">
                       <span className="text-white text-2xl">📷</span>
@@ -150,7 +150,7 @@ const Home = () => {
                     <p className="text-xs text-gray-500 mt-1">Click to upload or view image</p>
                   </div>
                 </div>
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
                   <div className="flex items-center">
                     <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
                       <Users className="w-4 h-4 text-blue-600" />
@@ -168,7 +168,7 @@ const Home = () => {
               </div>
 
               {/* Report 3 */}
-              <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 relative">
+              <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 relative flex flex-col h-full">
                 <div className="absolute top-4 right-4 z-10">
                   <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-2 rounded-full text-sm font-semibold flex items-center shadow-md">
                     <CheckCircle className="w-4 h-4 mr-1" />
@@ -181,7 +181,7 @@ const Home = () => {
                 <p className="text-gray-700 text-base mb-6 leading-relaxed">
                   Unusually high tides expected this evening. Coastal areas may experience temporary flooding.
                 </p>
-                <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center mb-6 hover:from-gray-50 hover:to-gray-150 transition-colors duration-200">
+                <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center mb-6 hover:from-gray-50 hover:to-gray-150 transition-colors duration-200 flex-grow">
                   <div className="text-center">
                     <div className="w-16 h-16 bg-gray-400 rounded-xl mx-auto mb-3 flex items-center justify-center shadow-md">
                       <span className="text-white text-2xl">📷</span>
@@ -190,7 +190,7 @@ const Home = () => {
                     <p className="text-xs text-gray-500 mt-1">Click to upload or view image</p>
                   </div>
                 </div>
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
                   <div className="flex items-center">
                     <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
                       <Users className="w-4 h-4 text-blue-600" />
@@ -289,57 +289,127 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Safe Places Nearby Card */}
-          <div className="bg-slate-50 rounded-xl shadow-lg p-8">
+          {/* Safe Places Card */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="flex items-center mb-6">
-              <MapPin className="w-6 h-6 text-blue-800 mr-3" />
-              <h2 className="text-xl font-semibold text-blue-800">Safe Places Nearby</h2>
+              <Shield className="w-5 h-5 text-red-500 mr-3" />
+              <h2 className="text-lg font-semibold text-gray-800">Safe Places</h2>
             </div>
             
             <div className="space-y-4">
-              {[
-                {
-                  name: 'Main Beach Lifeguard Station',
-                  distance: '0.2 km',
-                  type: 'Lifeguard Station',
-                  phone: '+(91) 1234567890'
-                },
-                {
-                  name: 'Harbor Safe Zone',
-                  distance: '0.5 km',
-                  type: 'Protected Harbor',
-                  phone: '+(91) 1234567890'
-                },
-                {
-                  name: 'Emergency Medical Station',
-                  distance: '0.9 km',
-                  type: 'Medical Facility',
-                  phone: '+(91) 1234567890'
-                }
-              ].map((place, index) => (
-                <div key={index} className="bg-white rounded-lg p-4 border border-gray-200">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center">
-                      <Phone className="w-5 h-5 text-blue-800 mr-2" />
-                      <h3 className="font-semibold text-gray-900 text-sm">{place.name}</h3>
-                    </div>
-                    <span className="text-xs text-gray-600">{place.distance}</span>
+              {/* Main Beach Lifeguard Station */}
+              <div className="flex items-start justify-between py-4 border-b border-gray-100 last:border-b-0">
+                <div className="flex items-start space-x-3">
+                  <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center mt-1">
+                    <Shield className="w-4 h-4 text-orange-600" />
                   </div>
-                  <p className="text-xs text-blue-600 mb-2">{place.type}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center text-xs text-gray-600">
-                      <Phone className="w-3 h-3 mr-1" />
-                      <span>{place.phone}</span>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 text-base mb-1">Main Beach Lifeguard Station</h3>
+                    <p className="text-sm text-blue-600 mb-2 text-left">Lifeguard Station</p>
+                    <div className="flex items-center text-sm text-gray-600 mb-1">
+                      <Phone className="w-4 h-4 mr-1" />
+                      <span>(555) 123-4567</span>
                     </div>
-                    <button className="bg-blue-800 text-white px-4 py-2 rounded text-sm font-medium flex items-center hover:bg-blue-700 transition-colors">
-                      <Navigation className="w-4 h-4 mr-1" />
-                      Directions
-                    </button>
+                    <div className="flex items-center text-sm text-gray-600">
+                      <Clock className="w-4 h-4 mr-1" />
+                      <span>6:00 AM - 8:00 PM</span>
+                    </div>
                   </div>
                 </div>
-              ))}
+                <div className="text-right">
+                  <p className="text-sm text-gray-600 mb-1">0.2 mi</p>
+                  <div className="flex items-center">
+                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                    <span className="text-sm font-medium text-gray-700 ml-1">4.8</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Harbor Safe Zone */}
+              <div className="flex items-start justify-between py-4 border-b border-gray-100 last:border-b-0">
+                <div className="flex items-start space-x-3">
+                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mt-1">
+                    <Anchor className="w-4 h-4 text-blue-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 text-base mb-1">Harbor Safe Zone</h3>
+                    <p className="text-sm text-blue-600 mb-2 text-left">Protected Harbor</p>
+                    <div className="flex items-center text-sm text-gray-600 mb-1">
+                      <Phone className="w-4 h-4 mr-1" />
+                      <span>(555) 987-6543</span>
+                    </div>
+                    <div className="flex items-center text-sm text-gray-600">
+                      <Clock className="w-4 h-4 mr-1" />
+                      <span>24 hours</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-600 mb-1">0.5 mi</p>
+                  <div className="flex items-center">
+                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                    <span className="text-sm font-medium text-gray-700 ml-1">4.5</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Emergency Medical Station */}
+              <div className="flex items-start justify-between py-4 border-b border-gray-100 last:border-b-0">
+                <div className="flex items-start space-x-3">
+                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mt-1">
+                    <Cross className="w-4 h-4 text-purple-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 text-base mb-1">Emergency Medical Station</h3>
+                    <p className="text-sm text-blue-600 mb-2 text-left">Medical Facility</p>
+                    <div className="flex items-center text-sm text-gray-600 mb-1">
+                      <Phone className="w-4 h-4 mr-1" />
+                      <span>(555) 911-1111</span>
+                    </div>
+                    <div className="flex items-center text-sm text-gray-600">
+                      <Clock className="w-4 h-4 mr-1" />
+                      <span>24 hours</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-600 mb-1">0.8 mi</p>
+                  <div className="flex items-center">
+                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                    <span className="text-sm font-medium text-gray-700 ml-1">4.9</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Coastal Emergency Shelter */}
+              <div className="flex items-start justify-between py-4 border-b border-gray-100 last:border-b-0">
+                <div className="flex items-start space-x-3">
+                  <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center mt-1">
+                    <Shield className="w-4 h-4 text-orange-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 text-base mb-1">Coastal Emergency Shelter</h3>
+                    <p className="text-sm text-blue-600 mb-2 text-left">Emergency Shelter</p>
+                    <div className="flex items-center text-sm text-gray-600 mb-1">
+                      <Phone className="w-4 h-4 mr-1" />
+                      <span>(555) 456-7890</span>
+                    </div>
+                    <div className="flex items-center text-sm text-gray-600">
+                      <Clock className="w-4 h-4 mr-1" />
+                      <span>24 hours</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-600 mb-1">1.2 mi</p>
+                  <div className="flex items-center">
+                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                    <span className="text-sm font-medium text-gray-700 ml-1">4.7</span>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+            </div>
         </div>
       </div>
     </div>

@@ -131,13 +131,13 @@ const Report = () => {
 
   return (
     <div className="min-h-screen bg-sky-100 py-8 px-4">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-4xl font-bold text-slate-800 mb-2">Report Incident</h1>
-              <p className="text-lg text-slate-600">Help keep your community safe!</p>
+              <h1 className="text-3xl font-bold text-gray-900 mb-1 text-left">Report Ocean Hazard</h1>
+              <p className="text-slate-600">Help keep our waters safe by reporting incidents</p>
             </div>
             
             {/* GPS Status */}
@@ -148,12 +148,15 @@ const Report = () => {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Incident Report Details Card */}
-          <div className="bg-slate-50 rounded-xl shadow-lg p-8">
+        <div className="flex gap-8">
+          {/* Main Content - Left Side */}
+          <div className="flex-1">
+            <form id="report-form" onSubmit={handleSubmit} className="space-y-6">
+          {/* Hazard Report Details Card */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="flex items-center mb-6">
-              <AlertTriangle className="w-6 h-6 text-blue-800 mr-3" />
-              <h2 className="text-xl font-semibold text-blue-800">Incident Report Details</h2>
+              <AlertTriangle className="w-5 h-5 text-blue-600 mr-3" />
+              <h2 className="text-lg font-semibold text-gray-800">Hazard Report Details</h2>
             </div>
 
             {/* Incident Type - Full Width */}
@@ -202,10 +205,10 @@ const Report = () => {
           </div>
 
           {/* Media Evidence Card */}
-          <div className="bg-slate-50 rounded-xl shadow-lg p-8">
+          <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="flex items-center mb-6">
-              <Camera className="w-6 h-6 text-blue-800 mr-3" />
-              <h2 className="text-xl font-semibold text-blue-800">Media Evidence</h2>
+              <Camera className="w-5 h-5 text-blue-600 mr-3" />
+              <h2 className="text-lg font-semibold text-gray-800">Media Evidence</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -300,10 +303,10 @@ const Report = () => {
           </div>
 
           {/* Voice Report Card */}
-          <div className="bg-slate-50 rounded-xl shadow-lg p-8">
+          <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="flex items-center mb-6">
-              <Mic className="w-6 h-6 text-blue-800 mr-3" />
-              <h2 className="text-xl font-semibold text-blue-800">Voice Report</h2>
+              <Mic className="w-5 h-5 text-blue-600 mr-3" />
+              <h2 className="text-lg font-semibold text-gray-800">Voice Report</h2>
             </div>
 
             <div className="max-w-md mx-auto">
@@ -368,32 +371,43 @@ const Report = () => {
             </div>
           </div>
 
-          {/* Submit Section */}
-          <div className="bg-slate-50 rounded-xl shadow-lg p-8">
-            <div className="space-y-4">
-              <button
-                type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-blue-700 hover:to-cyan-600 transform hover:scale-[1.02] transition-all duration-200 shadow-lg flex items-center justify-center"
-              >
-                <Send className="w-5 h-5 mr-2" />
-                Submit Report
-              </button>
-              
-              <button
-                type="button"
-                onClick={handleSaveDraft}
-                className="w-full bg-white border-2 border-blue-600 text-blue-600 py-4 px-6 rounded-xl font-semibold text-lg hover:bg-blue-50 transition-all duration-200 flex items-center justify-center"
-              >
-                <Save className="w-5 h-5 mr-2" />
-                Save as Draft
-              </button>
-            </div>
-            
-            <p className="text-center text-sm text-slate-500 mt-6">
-              Reports are reviewed by safety officials and shared with the community
-            </p>
+            </form>
           </div>
-        </form>
+
+          {/* Right Sidebar - Submit Section */}
+          <div className="w-80">
+            <div className="sticky top-8">
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <div className="flex items-center mb-6">
+                  <Send className="w-5 h-5 text-blue-600 mr-2" />
+                  <h2 className="text-lg font-semibold text-gray-800">Submit Report</h2>
+                </div>
+                
+                <div className="space-y-4">
+                  <button
+                    type="submit"
+                    form="report-form"
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-600 transition-all duration-200 shadow-md flex items-center justify-center"
+                  >
+                    Submit Report
+                  </button>
+                  
+                  <button
+                    type="button"
+                    onClick={handleSaveDraft}
+                    className="w-full bg-gray-100 border border-gray-300 text-gray-700 py-3 px-6 rounded-lg font-medium hover:bg-gray-200 transition-all duration-200 flex items-center justify-center"
+                  >
+                    Save as Draft
+                  </button>
+                </div>
+                
+                <p className="text-center text-sm text-gray-500 mt-6">
+                  Reports are reviewed by safety officials and shared with the community
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
