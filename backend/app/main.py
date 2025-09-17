@@ -28,7 +28,7 @@ async def shutdown_event():
     await rabbitmq_service.close()
     print("Pravaah API shutdown complete.")
 
-app.include_router(api_router)
+app.include_router(api_router, prefix="/api")
 
 @app.get("/", tags=["Root"])
 def read_root():

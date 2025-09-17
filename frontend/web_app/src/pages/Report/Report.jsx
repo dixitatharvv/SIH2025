@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { submitReport } from '../../services/reportService';
 import { 
   MapPin, 
   Camera, 
@@ -112,16 +113,46 @@ const Report = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log({
-      incidentType: selectedIncidentType,
-      description,
-      images: selectedImages,
-      videos: selectedVideos,
-      audio: audioBlob
-    });
+    try {
+      // Get geolocation
+      const position = await new Promise((resolve, reject) => {
+        if (!navigator.geolocation) {
+          reject(new Error('Geolocation is not supported by this browser.'));
+          return;
+        }
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000,
+        });
+      });
+
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+
+      await submitReport({
+        activityType: selectedIncidentType,
+        description,
+        photos: selectedImages,
+        videos: selectedVideos,
+        voiceReport: audioBlob,
+        latitude,
+        longitude,
+      });
+
+      alert('Report submitted successfully. It has been queued for processing.');
+      // Reset form
+      setSelectedIncidentType('');
+      setDescription('');
+      setSelectedImages([]);
+      setSelectedVideos([]);
+      setAudioBlob(null);
+    } catch (err) {
+      console.error('Submit failed', err);
+      alert(err?.message || 'Failed to submit report. Please try again.');
+    }
   };
 
   const handleSaveDraft = () => {
