@@ -40,4 +40,3 @@ class VerificationCreate(BaseModel):
     """
     report_id: UUID
     result_data: dict = Field(..., example={"condition": "Rain", "temp_celsius": 25.5})
-

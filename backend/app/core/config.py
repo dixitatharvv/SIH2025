@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     """
     # --- Core Services ---
     DATABASE_URL: str
+    SYNC_DATABASE_URL: str
     RABBITMQ_URL: str
     
     # --- JWT Security ---

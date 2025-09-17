@@ -1,106 +1,182 @@
-import asyncio
-import httpx
+# ai/worker.py
+import pika
 import json
-from aio_pika.abc import AbstractIncomingMessage
+import time
+import requests
 import os
 import sys
+import google.generativeai as genai
+from config import settings # Use the new local config
 
-# Add the parent directory to the path so we can import from the 'backend'
-# This is a common pattern for running sibling services in development.
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Configure the Gemini API client
+genai.configure(api_key=settings.GEMINI_API_KEY)
 
-from backend.app.services.rabbitmq_service import rabbitmq_service
-# Import your friend's powerful analysis function
-from analyze import analyze_post_with_gemini
+# --- Standalone NLP Analysis Logic ---
+import time
+import random
 
-# The URL for our main backend's verification endpoint
-PRAVAAH_API_URL = "http://127.0.0.1:8000"
-
-async def submit_verification_result(payload: dict):
+def analyze_description_with_gemini(description: str, max_retries: int = 3):
     """
-    Submits the NLP analysis results back to the main FastAPI backend.
+    Uses the Gemini LLM to analyze the user's description and extract structured data.
+    Includes retry logic for rate limiting and quota issues.
     """
-    endpoint_url = f"{PRAVAAH_API_URL}/verifications/nlp"
+    model = genai.GenerativeModel('gemini-pro')
+    prompt = f"""
+    Analyze the following hazard report description and extract the following information in a structured JSON format:
+    - "hazard_type": Classify the event into one of the following categories: Tsunami, Storm Surge, High Waves, Coastal Flooding, Unusual Sea Behavior, Other.
+    - "urgency": Assess the urgency on a scale of Low, Medium, High, or Critical.
+    - "sentiment": Determine the sentiment of the reporter (e.g., Worried, Panicked, Informative).
+    - "summary": Provide a brief, one-sentence summary of the event.
+
+    Description: "{description}"
+
+    Return ONLY the JSON object.
+    """
     
-    async with httpx.AsyncClient() as client:
+    for attempt in range(max_retries):
         try:
-            response = await client.post(endpoint_url, json=payload, timeout=60.0)
-            response.raise_for_status()
-            report_id = payload.get("report_id", "unknown")
-            print(f"  - Successfully submitted NLP verification for report {report_id}")
-        except httpx.HTTPStatusError as e:
-            print(f"Error submitting NLP verification: HTTP {e.response.status_code} - {e.response.text}")
+            response = model.generate_content(prompt)
+            # Clean the response to get only the JSON part
+            json_str = response.text.strip().replace('```json', '').replace('```', '').strip()
+            return json.loads(json_str)
         except Exception as e:
-            print(f"An unexpected error occurred while submitting NLP verification: {e}")
-
-def convert_event_type(nlp_event: str) -> str:
-    """Converts the LLM's free-text event_type to our strict ENUM."""
-    # This mapping is crucial for data consistency
-    mapping = {
-        "tsunami": "Tsunami",
-        "high waves": "High Waves / Swell",
-        "flooding": "Coastal Flooding",
-        "storm surge": "Storm Surge",
-        "rip current": "Rip Current",
-        "coastal erosion": "Coastal Erosion",
-        "algal bloom": "Water Discoloration / Algal Bloom",
-        "pollution": "Marine Debris / Pollution",
-    }
-    return mapping.get(nlp_event.lower().strip(), "Other")
-
-async def process_nlp_message(message: AbstractIncomingMessage):
-    """Callback function to process a message from the nlp_queue."""
-    async with message.process():
-        try:
-            body = json.loads(message.body.decode())
-            report_id = body["report_id"]
-            description = body["user_description"]
-
-            print(f"[+] Received NLP analysis request for report {report_id}")
+            error_msg = str(e)
+            print(f"Error analyzing with Gemini (attempt {attempt + 1}/{max_retries}): {e}")
             
-            # Use your friend's existing, powerful analysis function
-            analysis_json_str = await asyncio.to_thread(analyze_post_with_gemini, description)
-            analysis_data = json.loads(analysis_json_str)
-
-            if not analysis_data.get("ocean_hazard"):
-                print(f"  - NLP determined not an ocean hazard. Skipping submission.")
-                return
-
-            # --- Prepare the payload to send back to the main API ---
-            # This must match the NlpVerificationResult Pydantic model
-            final_payload = {
-                "report_id": report_id,
-                "verified_hazard_type": convert_event_type(analysis_data.get("event_type", "Other")),
-                "verified_location": { # The LLM provides a single location string, we need to adapt
-                    "latitude": 0.0, # Placeholder - In a real scenario, you'd geocode the location string
-                    "longitude": 0.0
-                },
-                "urgency": analysis_data.get("urgency", "low"),
-                "sentiment": analysis_data.get("sentiment", "neutral"),
-                "nlp_confidence_score": 0.9, # Placeholder - This would come from the model
-                "keywords_found": [], # Placeholder - This would come from the model
-                "source_urls": [] # Placeholder - This would come from the model
-            }
-
-            await submit_verification_result(final_payload)
-            print(f"[✔] Finished processing NLP analysis for report {report_id}")
-
-        except Exception as e:
-            print(f"[!] Error processing NLP message: {e}")
-
-async def main():
-    """Main function to connect to RabbitMQ and start the NLP worker."""
-    print("Starting NLP Worker Service...")
-    # NOTE: This reuses the RabbitMQ service from the main backend for simplicity.
-    # In production, this worker would have its own connection logic.
-    await rabbitmq_service.connect()
-    await rabbitmq_service.consume_messages("nlp_queue", process_nlp_message)
+            # Check if it's a quota/rate limit error
+            if "quota" in error_msg.lower() or "rate" in error_msg.lower() or "429" in error_msg:
+                if attempt < max_retries - 1:
+                    # Exponential backoff with jitter
+                    wait_time = (2 ** attempt) + random.uniform(0, 1)
+                    print(f"Rate limit hit. Waiting {wait_time:.1f} seconds before retry...")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    print("Max retries reached for quota/rate limit. Using fallback analysis.")
+                    return fallback_analysis(description)
+            else:
+                # For other errors, don't retry
+                return {"error": f"Failed to analyze description: {error_msg}"}
     
-    print("[*] NLP worker is running and waiting for jobs...")
-    try:
-        await asyncio.Future()
-    finally:
-        await rabbitmq_service.close()
+    return {"error": "Failed to analyze description after all retries."}
 
-if __name__ == "__main__":
-    asyncio.run(main())
+def fallback_analysis(description: str):
+    """
+    Simple fallback analysis when Gemini API is unavailable.
+    Provides basic keyword-based analysis.
+    """
+    description_lower = description.lower()
+    
+    # Simple keyword matching for hazard type
+    hazard_keywords = {
+        "tsunami": ["tsunami", "tidal wave", "giant wave"],
+        "storm surge": ["storm surge", "storm", "surge"],
+        "high waves": ["high waves", "big waves", "swell", "rough seas"],
+        "coastal flooding": ["flooding", "flood", "water level", "inundation"],
+        "rip current": ["rip current", "rip", "undertow"],
+        "other": []
+    }
+    
+    detected_hazard = "other"
+    for hazard, keywords in hazard_keywords.items():
+        if any(keyword in description_lower for keyword in keywords):
+            detected_hazard = hazard
+            break
+    
+    # Simple urgency detection
+    urgent_keywords = ["urgent", "emergency", "immediate", "dangerous", "critical"]
+    urgency = "High" if any(keyword in description_lower for keyword in urgent_keywords) else "Medium"
+    
+    # Simple sentiment detection
+    panic_keywords = ["panic", "scared", "frightened", "terrified"]
+    calm_keywords = ["calm", "normal", "usual"]
+    
+    if any(keyword in description_lower for keyword in panic_keywords):
+        sentiment = "Panicked"
+    elif any(keyword in description_lower for keyword in calm_keywords):
+        sentiment = "Calm"
+    else:
+        sentiment = "Informative"
+    
+    return {
+        "hazard_type": detected_hazard.title(),
+        "urgency": urgency,
+        "sentiment": sentiment,
+        "summary": f"Fallback analysis: {description[:100]}{'...' if len(description) > 100 else ''}",
+        "analysis_method": "fallback_keywords"
+    }
+
+# --- Standalone RabbitMQ Callback ---
+def on_message_received(ch, method, properties, body):
+    """
+    Callback function to process messages from the nlp_queue.
+    """
+    print(" [x] Received new message from nlp_queue")
+    report_data = json.loads(body)
+    report_id = report_data.get("report_id")
+    description = report_data.get("user_description")
+
+    if not report_id or not description:
+        print(" [!] Invalid message format. Missing 'report_id' or 'user_description'.")
+        ch.basic_ack(delivery_tag=method.delivery_tag)
+        return
+
+    print(f" [*] Analyzing description for report_id: {report_id}")
+    analysis_results = analyze_description_with_gemini(description)
+
+    # Prepare data for the fan-in endpoint
+    verification_payload = {
+        "report_id": report_id,
+        "result_data": analysis_results
+    }
+
+    # Make a POST request to the backend's fan-in endpoint
+    try:
+        response = requests.post(
+            "http://localhost:8000/verifications/nlp",
+            json=verification_payload
+        )
+        response.raise_for_status() # Raise an exception for bad status codes
+        print(f" [✔] Successfully submitted NLP verification for report_id: {report_id}")
+    except requests.exceptions.RequestException as e:
+        print(f" [!] Failed to submit NLP verification. Error: {e}")
+        # Here you might want to implement a retry mechanism or log to a dead-letter queue
+
+    ch.basic_ack(delivery_tag=method.delivery_tag)
+
+# --- Standalone RabbitMQ Connection Logic ---
+def start_worker():
+    """
+    Connects to RabbitMQ and starts consuming messages from the nlp_queue.
+    """
+    connection_params = pika.URLParameters(settings.RABBITMQ_URL)
+    while True:
+        try:
+            connection = pika.BlockingConnection(connection_params)
+            channel = connection.channel()
+            channel.queue_declare(queue='nlp_queue', durable=True)
+            channel.basic_qos(prefetch_count=1)
+            channel.basic_consume(queue='nlp_queue', on_message_callback=on_message_received)
+
+            print(' [*] NLP Worker is waiting for messages. To exit press CTRL+C')
+            channel.start_consuming()
+
+        except pika.exceptions.AMQPConnectionError as e:
+            print(f"Connection failed: {e}. Retrying in 5 seconds...")
+            time.sleep(5)
+        except KeyboardInterrupt:
+            print("Interrupted by user. Shutting down...")
+            break
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}. Restarting worker...")
+            time.sleep(5)
+
+if __name__ == '__main__':
+    # Test the fallback analysis if run directly
+    if len(sys.argv) > 1 and sys.argv[1] == "test":
+        test_description = "The waves are getting very high and the wind is strong. Water is reaching the shore line."
+        print("Testing fallback analysis:")
+        result = fallback_analysis(test_description)
+        print(json.dumps(result, indent=2))
+    else:
+        start_worker()
