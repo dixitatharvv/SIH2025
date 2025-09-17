@@ -61,7 +61,7 @@ async def get_weather_data(lat: float, lon: float) -> dict | None:
 
 async def submit_verification_result(report_id: str, verification_result: dict):
     """Submits the analyzed weather data back to the main FastAPI backend."""
-    endpoint_url = f"{PRAVAAH_API_URL}/verifications/weather"
+    endpoint_url = f"{PRAVAAH_API_URL}/api/verifications/weather"
     payload = {
         "report_id": report_id,
         "result_data": verification_result

@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { submitReport } from '../../services/reportService';
 import { 
   MapPin, 
   Camera, 
@@ -112,16 +113,46 @@ const Report = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log({
-      incidentType: selectedIncidentType,
-      description,
-      images: selectedImages,
-      videos: selectedVideos,
-      audio: audioBlob
-    });
+    try {
+      // Get geolocation
+      const position = await new Promise((resolve, reject) => {
+        if (!navigator.geolocation) {
+          reject(new Error('Geolocation is not supported by this browser.'));
+          return;
+        }
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000,
+        });
+      });
+
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+
+      await submitReport({
+        activityType: selectedIncidentType,
+        description,
+        photos: selectedImages,
+        videos: selectedVideos,
+        voiceReport: audioBlob,
+        latitude,
+        longitude,
+      });
+
+      alert('Report submitted successfully. It has been queued for processing.');
+      // Reset form
+      setSelectedIncidentType('');
+      setDescription('');
+      setSelectedImages([]);
+      setSelectedVideos([]);
+      setAudioBlob(null);
+    } catch (err) {
+      console.error('Submit failed', err);
+      alert(err?.message || 'Failed to submit report. Please try again.');
+    }
   };
 
   const handleSaveDraft = () => {
@@ -136,7 +167,7 @@ const Report = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-1 text-left">Report Ocean Hazard</h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-1 text-left">Report Ocean Incident</h1>
               <p className="text-slate-600">Help keep our waters safe by reporting incidents</p>
             </div>
             
@@ -152,11 +183,11 @@ const Report = () => {
           {/* Main Content - Left Side */}
           <div className="flex-1">
             <form id="report-form" onSubmit={handleSubmit} className="space-y-6">
-          {/* Hazard Report Details Card */}
+          {/* Incident Report Details Card */}
           <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="flex items-center mb-6">
               <AlertTriangle className="w-5 h-5 text-blue-600 mr-3" />
-              <h2 className="text-lg font-semibold text-gray-800">Hazard Report Details</h2>
+              <h2 className="text-lg font-semibold text-gray-800">Incident Report Details</h2>
             </div>
 
             {/* Incident Type - Full Width */}
