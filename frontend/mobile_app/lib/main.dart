@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'core/theme/app_theme.dart';
 import 'features/home/screens/home_screen.dart';
+import 'features/auth/widgets/auth_wrapper.dart';
 
 // --- Step 1: Initialize dotenv before running the app ---
 Future<void> main() async {
@@ -26,7 +27,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Pravah',
       theme: AppTheme.darkTheme,
-      home: const HomeScreen(),
+      debugShowCheckedModeBanner: false,
+      home: const AuthWrapper(),
+      routes: {
+        '/home': (context) => const HomeScreen(),
+      },
     );
   }
 }

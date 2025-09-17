@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Report from './pages/Report';
 import Community from './pages/Community';
 import Profile from './pages/Profile';
+import Auth from './pages/Auth';
 import './App.css';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
           <Route path="report" element={<Report />} />
           <Route path="community" element={<Community />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="auth" element={<Auth />} />
         </Route>
       </Routes>
     </Router>

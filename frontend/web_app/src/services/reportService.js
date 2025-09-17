@@ -1,5 +1,44 @@
 // Report Service for API communication
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+import api from '../utils/api';
+
+// Map UI activity labels to backend HazardType values
+const mapActivityToHazardType = (activityType) => {
+  const mapping = {
+    'Oil Spill': 'Marine Debris / Pollution',
+    'Marine Pollution': 'Marine Debris / Pollution',
+    'Suspicious Vessel': 'Other',
+    'Fishing Violation': 'Other',
+    'Coral Damage': 'Other',
+    'Marine Life Disturbance': 'Other',
+    'Weather Hazard': 'High Waves / Swell',
+    'Navigation Hazard': 'Other',
+    'Other': 'Other',
+    // Support values used by Report page
+    'tsunami': 'Tsunami',
+    'high_waves': 'High Waves / Swell',
+    'swell_surges': 'High Waves / Swell',
+    'flooding': 'Coastal Flooding',
+    'coastal_damage': 'Coastal Erosion',
+    'rip_current': 'Rip Current',
+    'marine_life': 'Other',
+    'weather_alert': 'High Waves / Swell',
+    'usual_tides': 'Other',
+  };
+  // If already a valid backend enum value, pass through
+  const validBackendEnums = new Set([
+    'Tsunami',
+    'High Waves / Swell',
+    'Coastal Flooding',
+    'Storm Surge',
+    'Rip Current',
+    'Coastal Erosion',
+    'Water Discoloration / Algal Bloom',
+    'Marine Debris / Pollution',
+    'Other',
+  ]);
+  if (validBackendEnums.has(activityType)) return activityType;
+  return mapping[activityType] || 'Other';
+};
 
 /**
  * Submit a hazard report to the backend API
@@ -16,58 +55,45 @@ export const submitReport = async (reportData) => {
     // Create FormData for multipart/form-data request
     const formData = new FormData();
     
-    // Add required fields
-    formData.append('hazard_type', reportData.activityType);
-    formData.append('description', reportData.description || '');
+    // Add required fields matching backend
+    formData.append('user_hazard_type', mapActivityToHazardType(reportData.activityType));
+    formData.append('user_description', reportData.description || '');
     
-    // Add location data (you might want to get this from geolocation)
-    // For now, using default coordinates - you can modify this
-    formData.append('latitude', 28.6139); // Default to Delhi coordinates
-    formData.append('longitude', 77.2090);
+    // Location is sent in headers, not form fields
     
-    // Add media files
+    // Add media files as a single field list expected by backend
     if (reportData.photos && reportData.photos.length > 0) {
-      reportData.photos.forEach((photo, index) => {
-        formData.append(`photo_${index}`, photo);
+      reportData.photos.forEach((file) => {
+        formData.append('media_files', file);
       });
     }
-    
     if (reportData.videos && reportData.videos.length > 0) {
-      reportData.videos.forEach((video, index) => {
-        formData.append(`video_${index}`, video);
+      reportData.videos.forEach((file) => {
+        formData.append('media_files', file);
       });
     }
-    
-    // Add voice report if available
     if (reportData.voiceReport) {
-      formData.append('voice_report', reportData.voiceReport);
+      formData.append('media_files', reportData.voiceReport);
     }
 
-    const response = await fetch(`${API_BASE_URL}/api/reports/submit`, {
-      method: 'POST',
-      body: formData,
-      // Don't set Content-Type header, let browser set it with boundary for FormData
+    const { data } = await api.post('/reports/submit', formData, {
+      headers: { 
+        'Content-Type': 'multipart/form-data',
+        'latitude': String(reportData.latitude),
+        'longitude': String(reportData.longitude),
+      },
     });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(
-        errorData.detail || 
-        `HTTP error! status: ${response.status}`
-      );
-    }
-
-    const result = await response.json();
-    return result;
+    return data;
   } catch (error) {
     console.error('Error submitting report:', error);
     
-    // Handle network errors
-    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+    // Normalize axios/network errors
+    if (error.response?.data?.detail) {
+      throw new Error(error.response.data.detail);
+    }
+    if (error.message?.includes('Network Error')) {
       throw new Error('Unable to connect to the server. Please check your internet connection.');
     }
-    
-    // Re-throw other errors
     throw error;
   }
 };
@@ -79,21 +105,13 @@ export const submitReport = async (reportData) => {
  */
 export const saveDraft = async (reportData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/reports/draft`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(reportData),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return await response.json();
+    const { data } = await api.post('/reports/draft', reportData);
+    return data;
   } catch (error) {
     console.error('Error saving draft:', error);
+    if (error.response?.data?.detail) {
+      throw new Error(error.response.data.detail);
+    }
     throw error;
   }
 };
