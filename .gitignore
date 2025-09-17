@@ -55,4 +55,5 @@ ai/twitter-scraper/.env
 ai/twitter-scraper/config.py
 ai/venv/
 *.pyc
+*.pyd
 venv/

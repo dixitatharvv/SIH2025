@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { User, Shield, BarChart3, Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import pravaahLogo from '../../assets/pravaah-logo.svg';
+<<<<<<< HEAD
 import { login, register } from '../../services/authService';
+=======
+>>>>>>> f1b43108805123c9ffd91137ac700c745ee2a837
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -15,7 +18,10 @@ const Auth = () => {
     password: ''
   });
   const [validationErrors, setValidationErrors] = useState({});
+<<<<<<< HEAD
   const [loginError, setLoginError] = useState('');
+=======
+>>>>>>> f1b43108805123c9ffd91137ac700c745ee2a837
 
   const handleInputChange = (e) => {
     setFormData({
@@ -24,7 +30,11 @@ const Auth = () => {
     });
   };
 
+<<<<<<< HEAD
   const handleSignIn = async (e) => {
+=======
+  const handleSignIn = (e) => {
+>>>>>>> f1b43108805123c9ffd91137ac700c745ee2a837
     e.preventDefault();
     const errors = {};
     
@@ -43,6 +53,7 @@ const Auth = () => {
     }
     
     setValidationErrors({});
+<<<<<<< HEAD
     setLoginError('');
     try {
       const res = await login({ email: formData.email, password: formData.password });
@@ -62,6 +73,12 @@ const Auth = () => {
   };
 
   const handleSignUp = async (e) => {
+=======
+    navigate('/');
+  };
+
+  const handleSignUp = (e) => {
+>>>>>>> f1b43108805123c9ffd91137ac700c745ee2a837
     e.preventDefault();
     const errors = {};
     
@@ -83,6 +100,7 @@ const Auth = () => {
     }
     
     setValidationErrors({});
+<<<<<<< HEAD
     try {
       await register({
         email: formData.email,
@@ -101,6 +119,9 @@ const Auth = () => {
     } catch (err) {
       alert(err?.response?.data?.detail || err?.message || 'Registration failed');
     }
+=======
+    navigate('/');
+>>>>>>> f1b43108805123c9ffd91137ac700c745ee2a837
   };
 
   const isSignInValid = formData.email && formData.password;
@@ -152,6 +173,7 @@ const Auth = () => {
   };
 
   return (
+<<<<<<< HEAD
     <div className="h-screen overflow-hidden bg-gradient-to-br from-sky-50 to-blue-100 flex">
       {/* Left Side - Pravaah Info */}
       <div className="hidden lg:flex lg:w-1/2 p-8 flex-col justify-center">
@@ -164,32 +186,66 @@ const Auth = () => {
             <div>
               <h1 className="text-3xl font-bold text-gray-900 text-left">Pravaah</h1>
               <p className="text-blue-600 font-semibold text-left text-base">Pacific Coast Protection</p>
+=======
+    <div className="min-h-screen bg-gradient-to-br from-sky-50 to-blue-100 flex">
+      {/* Left Side - Pravaah Info */}
+      <div className="hidden lg:flex lg:w-1/2 p-12 flex-col justify-center">
+        <div className="w-full max-w-lg">
+          {/* Logo */}
+          <div className="flex items-center mb-8">
+            <div className="w-16 h-16 mr-4">
+              <img src={pravaahLogo} alt="Pravaah Logo" className="w-full h-full" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900 text-left">Pravaah</h1>
+              <p className="text-blue-600 font-semibold text-left text-lg">Pacific Coast Protection</p>
+>>>>>>> f1b43108805123c9ffd91137ac700c745ee2a837
             </div>
           </div>
 
           {/* Main Heading */}
+<<<<<<< HEAD
           <h2 className="text-3xl font-semibold text-gray-900 mb-6 text-left leading-tight">
+=======
+          <h2 className="text-4xl font-semibold text-gray-900 mb-8 text-left leading-tight">
+>>>>>>> f1b43108805123c9ffd91137ac700c745ee2a837
             Protecting Our Oceans Together
           </h2>
 
           {/* Description */}
+<<<<<<< HEAD
           <p className="text-gray-600 text-lg mb-10 leading-relaxed text-left">
+=======
+          <p className="text-gray-600 text-xl mb-16 leading-relaxed text-left">
+>>>>>>> f1b43108805123c9ffd91137ac700c745ee2a837
             Join our community-driven platform to report hazards, share safety 
             information, and help keep our coastal waters safe for everyone.
           </p>
 
           {/* User Type Cards - Horizontal Layout */}
+<<<<<<< HEAD
           <div className="grid grid-cols-3 gap-3">
+=======
+          <div className="grid grid-cols-3 gap-4">
+>>>>>>> f1b43108805123c9ffd91137ac700c745ee2a837
             {userTypes.map((type) => {
               const Icon = type.icon;
               const colors = getColorClasses(type.color);
               
               return (
+<<<<<<< HEAD
                 <div key={type.id} className="text-center bg-white bg-opacity-60 backdrop-blur-sm rounded-2xl px-4 py-5 shadow-lg min-h-[170px] flex flex-col justify-center">
                   <div className={`w-12 h-12 ${colors.icon} rounded-2xl flex items-center justify-center mx-auto mb-3`}>
                     <Icon className="w-6 h-6 text-white" />
                   </div>
                   <h3 className="font-bold text-gray-900 mb-2 text-base">{type.name}</h3>
+=======
+                <div key={type.id} className="text-center bg-white bg-opacity-60 backdrop-blur-sm rounded-2xl px-5 py-6 shadow-lg min-h-[200px] flex flex-col justify-center">
+                  <div className={`w-16 h-16 ${colors.icon} rounded-2xl flex items-center justify-center mx-auto mb-4`}>
+                    <Icon className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="font-bold text-gray-900 mb-3 text-lg">{type.name}</h3>
+>>>>>>> f1b43108805123c9ffd91137ac700c745ee2a837
                   <p className="text-sm text-gray-600 leading-relaxed px-0.5">{type.description}</p>
                 </div>
               );
@@ -199,6 +255,7 @@ const Auth = () => {
       </div>
 
       {/* Right Side - Auth Form */}
+<<<<<<< HEAD
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6">
         <div className="w-full max-w-md">
           <div className="bg-white rounded-2xl shadow-xl p-6">
@@ -207,18 +264,36 @@ const Auth = () => {
               {activeTab === 'signin' ? (
                 <>
                   <h2 className="text-xl font-bold text-gray-900 mb-1">Welcome Back</h2>
+=======
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
+        <div className="w-full max-w-md">
+          <div className="bg-white rounded-2xl shadow-xl p-8">
+            {/* Welcome Header */}
+            <div className="text-center mb-8">
+              {activeTab === 'signin' ? (
+                <>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+>>>>>>> f1b43108805123c9ffd91137ac700c745ee2a837
                   <p className="text-gray-600">Sign in to your account</p>
                 </>
               ) : (
                 <>
+<<<<<<< HEAD
                   <h2 className="text-xl font-bold text-gray-900 mb-1">Welcome</h2>
+=======
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome</h2>
+>>>>>>> f1b43108805123c9ffd91137ac700c745ee2a837
                   <p className="text-gray-600">Create a new account</p>
                 </>
               )}
             </div>
 
             {/* Tab Navigation */}
+<<<<<<< HEAD
             <div className="flex bg-gray-100 rounded-lg p-1 mb-6">
+=======
+            <div className="flex bg-gray-100 rounded-lg p-1 mb-8">
+>>>>>>> f1b43108805123c9ffd91137ac700c745ee2a837
               <button
                 onClick={() => setActiveTab('signin')}
                 className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
@@ -244,9 +319,12 @@ const Auth = () => {
             {/* Sign In Form */}
             {activeTab === 'signin' && (
               <form onSubmit={handleSignIn} className="space-y-6">
+<<<<<<< HEAD
                 {loginError && (
                   <div className="text-red-600 text-sm font-medium text-center">{loginError}</div>
                 )}
+=======
+>>>>>>> f1b43108805123c9ffd91137ac700c745ee2a837
                 {/* Email Field */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2 text-left">
