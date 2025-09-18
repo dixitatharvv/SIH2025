@@ -214,7 +214,6 @@ const Auth = () => {
                 Sign Up
               </button>
             </div>
-
             {/* Sign In Form */}
             {activeTab === 'signin' && (
               <form onSubmit={handleSignIn} className="space-y-6">
@@ -245,7 +244,6 @@ const Auth = () => {
                     )}
                   </div>
                 </div>
-
                 {/* Password Field */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2 text-left">
@@ -294,12 +292,12 @@ const Auth = () => {
 
             {/* Sign Up Form */}
             {activeTab === 'signup' && (
-              <form onSubmit={handleSignUp} className="space-y-6">
+              <form onSubmit={handleSignUp} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3 text-left">
+                  <label className="block text-sm font-medium text-gray-700 mb-2 text-left">
                     I am a:
                   </label>
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-3 gap-2">
                     {userTypes.map((type) => {
                       const Icon = type.icon;
                       const colors = getColorClasses(type.color, selectedUserType === type.id);
@@ -308,9 +306,9 @@ const Auth = () => {
                           key={type.id}
                           type="button"
                           onClick={() => setSelectedUserType(type.id)}
-                          className={`p-4 border-2 rounded-lg transition-all hover:shadow-md ${colors.bg}`}
+                          className={`p-3 border-2 rounded-lg transition-all hover:shadow-md ${colors.bg}`}
                         >
-                          <div className={`w-8 h-8 ${colors.icon} rounded-lg flex items-center justify-center mx-auto mb-2`}>
+                          <div className={`w-7 h-7 ${colors.icon} rounded-lg flex items-center justify-center mx-auto mb-2`}>
                             <Icon className="w-4 h-4 text-white" />
                           </div>
                           <p className="text-sm font-medium text-gray-900">{type.name}</p>
@@ -332,7 +330,7 @@ const Auth = () => {
                       value={formData.email}
                       onChange={handleInputChange}
                       placeholder="your@email.com"
-                      className={`w-full pl-12 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors ${
+                      className={`w-full pl-12 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors ${
                         validationErrors.email ? 'border-red-500' : 'border-gray-300'
                       }`}
                     />
@@ -356,7 +354,7 @@ const Auth = () => {
                       value={formData.username}
                       onChange={handleInputChange}
                       placeholder="oceankeeper123"
-                      className={`w-full pl-12 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors ${
+                      className={`w-full pl-12 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors ${
                         validationErrors.username ? 'border-red-500' : 'border-gray-300'
                       }`}
                     />
@@ -380,7 +378,7 @@ const Auth = () => {
                       value={formData.password}
                       onChange={handleInputChange}
                       placeholder="••••••••"
-                      className={`w-full pl-12 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors ${
+                      className={`w-full pl-12 pr-12 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors ${
                         validationErrors.password ? 'border-red-500' : 'border-gray-300'
                       }`}
                     />
