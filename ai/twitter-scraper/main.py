@@ -101,6 +101,14 @@ def main():
 					return True
 				if isinstance(ocean_hazard, str) and ocean_hazard.lower() in ("yes", "true", "1"):
 					return True
+				# Fallback: treat known ocean/coastal event types as hazards
+				event_type = str(payload.get("event_type", "")).lower().strip()
+				coastal_types = {
+					"tsunami", "high waves", "storm surge", "swell", "rip current",
+					"coastal erosion", "algal bloom", "pollution", "cyclone", "hurricane", "typhoon"
+				}
+				if event_type in coastal_types:
+					return True
 				return False
 
 			if is_hazard_from_llm(llm_json):
