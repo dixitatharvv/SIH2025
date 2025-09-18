@@ -25,6 +25,14 @@ const ChangeView = ({ center, zoom }) => {
   return null;
 };
 
+// NEW: Helper function to determine the status level from confidence
+const getConfidenceLevel = (confidence) => {
+  if (confidence < 0.35) return 'Very Low';
+  if (confidence < 0.6) return 'Low';
+  if (confidence < 0.85) return 'Medium';
+  return 'High';
+};
+
 const MapView = ({
   center = [20.5937, 78.9629],
   zoom = 5,
@@ -38,19 +46,23 @@ const MapView = ({
 
   const style = useMemo(() => ({ height, width: '100%' }), [height]);
 
+  const visibleHotspots = (hotspots || []).filter((h) => (h.confidence ?? 0) >= 0.35);
+
   return (
     <div className={className} style={style}>
       <MapContainer center={center} zoom={zoom} style={{ height: '100%', width: '100%' }} scrollWheelZoom>
         <ChangeView center={center} zoom={zoom} />
         <TileLayer url={tileUrl} attribution={attribution} />
-        {hotspots.map((h, idx) => {
+        {visibleHotspots.map((h, idx) => {
           const c = Math.max(0, Math.min(1, h.confidence ?? 0));
-          // Shades of red by confidence (low alpha for low confidence)
           const fillOpacity = 0.25 + c * 0.5; // 0.25..0.75
           const color = `rgba(220, 38, 38, ${Math.min(1, 0.4 + c * 0.5)})`; // red-600 stroke
           const fillColor = `rgba(239, 68, 68, ${fillOpacity})`; // red-500 fill
-          // Radius scale: 100m at low to 400m at high (approx; meters units used by CircleMarker's radius in pixels? Circle uses meters; CircleMarker uses pixels)
           const radius = 10 + c * 20; // pixels for CircleMarker
+
+          // Get the descriptive level for the popup
+          const confidenceLevel = getConfidenceLevel(c);
+
           return (
             <CircleMarker
               key={`hs-${idx}`}
@@ -60,6 +72,8 @@ const MapView = ({
             >
               <Popup>
                 <div style={{ minWidth: 160 }}>
+                  {/* UPDATED: Display the new confidence level */}
+                  <div><strong>Level:</strong> {confidenceLevel}</div>
                   <div><strong>Confidence:</strong> {(c * 100).toFixed(0)}%</div>
                   {h.hazardType ? <div><strong>Type:</strong> {h.hazardType}</div> : null}
                   {h.status ? <div><strong>Status:</strong> {h.status}</div> : null}
@@ -80,5 +94,3 @@ const MapView = ({
 };
 
 export default MapView;
-
-

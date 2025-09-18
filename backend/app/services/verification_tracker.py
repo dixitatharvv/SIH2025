@@ -66,7 +66,7 @@ class VerificationTracker:
             
             await db.commit()
             
-            print(f"[VerificationTracker] ✅ Confidence calculated for report {report_id}: "
+            print(f"[VerificationTracker]  Confidence calculated for report {report_id}: "
                   f"Score={confidence_result['confidence_score']}, Level={confidence_level}")
             
             return confidence_result
