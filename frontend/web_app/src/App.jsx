@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
@@ -9,7 +9,23 @@ import Auth from './pages/Auth';
 import './App.css';
 
 function App() {
-  const isLoggedIn = Boolean(localStorage.getItem('authToken'));
+  const [authChecked, setAuthChecked] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setIsLoggedIn(Boolean(localStorage.getItem('authToken')));
+    setAuthChecked(true);
+    const onStorage = (e) => {
+      if (e.key === 'authToken') {
+        setIsLoggedIn(Boolean(e.newValue));
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
+
+  if (!authChecked) return null;
+
   return (
     <Router>
       <Routes>
@@ -18,7 +34,7 @@ function App() {
           <Route path="report" element={<Report />} />
           <Route path="community" element={<Community />} />
           <Route path="profile" element={<Profile />} />
-          <Route path="auth" element={<Auth />} />
+          <Route path="auth" element={isLoggedIn ? <Navigate to="/" replace /> : <Auth />} />
         </Route>
       </Routes>
     </Router>

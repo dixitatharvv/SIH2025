@@ -105,3 +105,15 @@ To ensure code consistency across the team, please use the configured code forma
 - **Python**: Use `black` and `ruff`. We recommend installing the official VS Code extensions for these tools to format your code automatically on save.
 - **React**: Use `Prettier` and `ESLint`. The VS Code "Prettier - Code formatter" and "ESLint" extensions are highly recommended.
 - **Flutter**: Use the default `dart format`. VS Code and Android Studio will do this automatically if configured.
+
+
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements
+uvicorn app.main:app --reload
+
+ai has .env
+ai/twitter-scraper has config.py
+ai/youtube-scraper has .env
+
+backend has .env

@@ -7,13 +7,15 @@ export const fetchHotspots = async () => {
     id: h.report_id,
     lat: h.latitude,
     lng: h.longitude,
-    confidence: typeof h.confidence === 'number' ? h.confidence : 0,
+    // normalize confidence to 0..1; backend may return 0..1 or 0..100
+    confidence: (() => {
+      const raw = Number(h.confidence);
+      if (!isFinite(raw)) return 0;
+      const val = raw > 1 ? raw / 100 : raw;
+      return Math.max(0, Math.min(1, val));
+    })(),
     hazardType: h.hazard_type,
     status: h.status,
     createdAt: h.created_at,
   }));
 };
-
-
-
-

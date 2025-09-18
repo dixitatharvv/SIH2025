@@ -89,8 +89,8 @@ async def list_hotspots(db: AsyncSession = Depends(get_db)):
         # Normalize values
         conf_val = float(conf or 0.0)
         status_str = status.value if hasattr(status, 'value') else str(status)
-        # Reject: confidence below 0.4 or status explicitly rejected
-        if conf_val < 0.4 or status_str == "rejected":
+        # Reject only when confidence below threshold (0.35)
+        if conf_val < 0.35:
             continue
         # WKT format: 'POINT(lon lat)'
         try:

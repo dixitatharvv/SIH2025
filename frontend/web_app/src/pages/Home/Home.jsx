@@ -7,6 +7,8 @@ const Home = () => {
   const [hotspots, setHotspots] = useState([]);
   const [loadingHotspots, setLoadingHotspots] = useState(true);
   const [hotspotError, setHotspotError] = useState('');
+  const [myLocation, setMyLocation] = useState(null); // { lat, lng }
+  const [locationAllowed, setLocationAllowed] = useState(null); // null|true|false
 
   useEffect(() => {
     let mounted = true;
@@ -21,6 +23,28 @@ const Home = () => {
       }
     })();
     return () => { mounted = false; };
+  }, []);
+
+  // Request location permission and current position
+  useEffect(() => {
+    let active = true;
+    if (!navigator.geolocation) {
+      setLocationAllowed(false);
+      return () => {};
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        if (!active) return;
+        setMyLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setLocationAllowed(true);
+      },
+      () => {
+        if (!active) return;
+        setLocationAllowed(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 }
+    );
+    return () => { active = false; };
   }, []);
 
   return (
@@ -68,9 +92,9 @@ const Home = () => {
                 ) : null}
                 <MapView
                   height="256px"
-                  center={[19.0760, 72.8777]}
-                  zoom={11}
-                  markers={[{ position: [19.0760, 72.8777], popup: 'You are here' }]}
+                  center={myLocation ? [myLocation.lat, myLocation.lng] : [12.9716, 77.5946]}
+                  zoom={myLocation ? 13 : 11}
+                  markers={locationAllowed && myLocation ? [{ position: [myLocation.lat, myLocation.lng], popup: 'My Location' }] : []}
                   hotspots={hotspots}
                 />
                 {loadingHotspots ? (
@@ -109,7 +133,7 @@ const Home = () => {
                 </p>
                 <div className="h-48 rounded-xl overflow-hidden mb-6 flex-grow">
                   <img 
-                    src="/src/assets/flooding.jpg" 
+                    src="/src/assets/flooding4.jpg" 
                     alt="Coastal flooding" 
                     className="w-full h-full object-cover"
                   />
@@ -185,7 +209,7 @@ const Home = () => {
                 </p>
                 <div className="h-48 rounded-xl overflow-hidden mb-6 flex-grow">
                   <img 
-                    src="/src/assets/flooding3.jpg" 
+                    src="/src/assets/flooding5.jpg" 
                     alt="River flood" 
                     className="w-full h-full object-cover"
                   />
@@ -289,7 +313,7 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Safe Places Card */}
+          {/* Safe Places Card (Indian locations; distance from Bengaluru) */}
           <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="flex items-center mb-6">
               <Shield className="w-5 h-5 text-red-500 mr-3" />
@@ -297,117 +321,52 @@ const Home = () => {
             </div>
             
             <div className="space-y-4">
-              {/* Main Beach Lifeguard Station */}
-              <div className="flex items-start justify-between py-4 border-b border-gray-100 last:border-b-0">
-                <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center mt-1">
-                    <Shield className="w-4 h-4 text-orange-600" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-base mb-1">Main Beach Lifeguard Station</h3>
-                    <p className="text-sm text-blue-600 mb-2 text-left">Lifeguard Station</p>
-                    <div className="flex items-center text-sm text-gray-600 mb-1">
-                      <Phone className="w-4 h-4 mr-1" />
-                      <span>(555) 123-4567</span>
+              {(() => {
+                const BLR = { lat: 12.9716, lng: 77.5946 };
+                const toRad = (d) => (d * Math.PI) / 180;
+                const haversineKm = (a, b) => {
+                  const R = 6371;
+                  const dLat = toRad(b.lat - a.lat);
+                  const dLng = toRad(b.lng - a.lng);
+                  const sa = Math.sin(dLat/2)**2 + Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLng/2)**2;
+                  const c = 2 * Math.atan2(Math.sqrt(sa), Math.sqrt(1 - sa));
+                  return R * c;
+                };
+                const places = [
+                  { name: 'Bengaluru City Police HQ', type: 'Police Station', phone: '+91 80 2294 3333', coord: { lat: 12.9716, lng: 77.5946 }, icon: 'shield', rating: 4.7, hours: '24 hours' },
+                  { name: 'NIMHANS Emergency', type: 'Medical Facility', phone: '+91 80 2699 5555', coord: { lat: 12.9426, lng: 77.5950 }, icon: 'cross', rating: 4.6, hours: '24 hours' },
+                  { name: 'KSDMA Control Room', type: 'Emergency Shelter', phone: '+91 80 2225 5555', coord: { lat: 12.9784, lng: 77.5750 }, icon: 'shield', rating: 4.5, hours: '24 hours' },
+                  { name: 'Ulsoor Lake Lifeguard Point', type: 'Lifeguard Station', phone: '+91 80 2294 0000', coord: { lat: 12.9833, lng: 77.6280 }, icon: 'anchor', rating: 4.4, hours: '6:00 AM - 8:00 PM' },
+                ].map((p) => ({ ...p, distanceKm: haversineKm(BLR, p.coord) }));
+                return places.map((p, idx) => (
+                  <div key={idx} className="flex items-start justify-between py-4 border-b border-gray-100 last:border-b-0">
+                    <div className="flex items-start space-x-3">
+                      <div className={`w-8 h-8 ${p.icon==='anchor' ? 'bg-blue-100' : p.icon==='cross' ? 'bg-purple-100' : 'bg-orange-100'} rounded-lg flex items-center justify-center mt-1`}>
+                        {p.icon==='anchor' ? <Anchor className="w-4 h-4 text-blue-600" /> : p.icon==='cross' ? <Cross className="w-4 h-4 text-purple-600" /> : <Shield className="w-4 h-4 text-orange-600" />}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900 text-base mb-1">{p.name}</h3>
+                        <p className="text-sm text-blue-600 mb-2 text-left">{p.type}</p>
+                        <div className="flex items-center text-sm text-gray-600 mb-1">
+                          <Phone className="w-4 h-4 mr-1" />
+                          <span>{p.phone}</span>
+                        </div>
+                        <div className="flex items-center text-sm text-gray-600">
+                          <Clock className="w-4 h-4 mr-1" />
+                          <span>{p.hours}</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Clock className="w-4 h-4 mr-1" />
-                      <span>6:00 AM - 8:00 PM</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm text-gray-600 mb-1">0.2 mi</p>
-                  <div className="flex items-center">
-                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                    <span className="text-sm font-medium text-gray-700 ml-1">4.8</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Harbor Safe Zone */}
-              <div className="flex items-start justify-between py-4 border-b border-gray-100 last:border-b-0">
-                <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mt-1">
-                    <Anchor className="w-4 h-4 text-blue-600" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-base mb-1">Harbor Safe Zone</h3>
-                    <p className="text-sm text-blue-600 mb-2 text-left">Protected Harbor</p>
-                    <div className="flex items-center text-sm text-gray-600 mb-1">
-                      <Phone className="w-4 h-4 mr-1" />
-                      <span>(555) 987-6543</span>
-                    </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Clock className="w-4 h-4 mr-1" />
-                      <span>24 hours</span>
+                    <div className="text-right">
+                      <p className="text-sm text-gray-600 mb-1">{p.distanceKm.toFixed(1)} km</p>
+                      <div className="flex items-center">
+                        <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                        <span className="text-sm font-medium text-gray-700 ml-1">{p.rating}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm text-gray-600 mb-1">0.5 mi</p>
-                  <div className="flex items-center">
-                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                    <span className="text-sm font-medium text-gray-700 ml-1">4.5</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Emergency Medical Station */}
-              <div className="flex items-start justify-between py-4 border-b border-gray-100 last:border-b-0">
-                <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mt-1">
-                    <Cross className="w-4 h-4 text-purple-600" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-base mb-1">Emergency Medical Station</h3>
-                    <p className="text-sm text-blue-600 mb-2 text-left">Medical Facility</p>
-                    <div className="flex items-center text-sm text-gray-600 mb-1">
-                      <Phone className="w-4 h-4 mr-1" />
-                      <span>(555) 911-1111</span>
-                    </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Clock className="w-4 h-4 mr-1" />
-                      <span>24 hours</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm text-gray-600 mb-1">0.8 mi</p>
-                  <div className="flex items-center">
-                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                    <span className="text-sm font-medium text-gray-700 ml-1">4.9</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Coastal Emergency Shelter */}
-              <div className="flex items-start justify-between py-4 border-b border-gray-100 last:border-b-0">
-                <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center mt-1">
-                    <Shield className="w-4 h-4 text-orange-600" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-base mb-1">Coastal Emergency Shelter</h3>
-                    <p className="text-sm text-blue-600 mb-2 text-left">Emergency Shelter</p>
-                    <div className="flex items-center text-sm text-gray-600 mb-1">
-                      <Phone className="w-4 h-4 mr-1" />
-                      <span>(555) 456-7890</span>
-                    </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Clock className="w-4 h-4 mr-1" />
-                      <span>24 hours</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm text-gray-600 mb-1">1.2 mi</p>
-                  <div className="flex items-center">
-                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                    <span className="text-sm font-medium text-gray-700 ml-1">4.7</span>
-                  </div>
-                </div>
-              </div>
+                ));
+              })()}
             </div>
             </div>
         </div>
