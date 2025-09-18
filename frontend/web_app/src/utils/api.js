@@ -30,7 +30,9 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       // Handle unauthorized access
       localStorage.removeItem('authToken');
-      window.location.href = '/login';
+      if (window.location.pathname !== '/auth') {
+        window.location.replace('/auth');
+      }
     }
     return Promise.reject(error);
   }

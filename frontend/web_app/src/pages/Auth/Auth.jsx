@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { User, Shield, BarChart3, Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import pravaahLogo from '../../assets/pravaah-logo.svg';
@@ -16,6 +16,14 @@ const Auth = () => {
   });
   const [validationErrors, setValidationErrors] = useState({});
   const [loginError, setLoginError] = useState('');
+
+  // If already logged in, redirect to home
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      navigate('/', { replace: true });
+    }
+  }, [navigate]);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -47,7 +55,9 @@ const Auth = () => {
       const res = await login({ email: formData.email, password: formData.password });
       if (res?.access_token) {
         localStorage.setItem('authToken', res.access_token);
-        navigate('/');
+        // also broadcast change for other tabs
+        window.dispatchEvent(new StorageEvent('storage', { key: 'authToken', newValue: res.access_token }));
+        navigate('/', { replace: true });
       } else {
         setLoginError('Incorrect email or password');
       }
@@ -91,7 +101,8 @@ const Auth = () => {
       const res = await login({ email: formData.email, password: formData.password });
       if (res?.access_token) {
         localStorage.setItem('authToken', res.access_token);
-        navigate('/');
+        window.dispatchEvent(new StorageEvent('storage', { key: 'authToken', newValue: res.access_token }));
+        navigate('/', { replace: true });
       } else {
         navigate('/auth');
       }
@@ -116,7 +127,7 @@ const Auth = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] overflow-hidden bg-gradient-to-br from-sky-50 to-blue-100 flex">
+    <div className="h-[calc(100vh-4rem)] max-h-[calc(100vh-5rem)] overflow-hidden bg-gradient-to-br from-sky-50 to-blue-100 flex">
       {/* Left Side - Pravaah Info */}
       <div className="hidden lg:flex lg:w-1/2 p-8 flex-col justify-center">
         <div className="w-full max-w-lg">

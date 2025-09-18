@@ -10,7 +10,9 @@ const Navbar = () => {
 
   const handleSignOut = () => {
     localStorage.removeItem('authToken');
-    navigate('/auth');
+    // notify other parts/tabs
+    window.dispatchEvent(new StorageEvent('storage', { key: 'authToken', newValue: null }));
+    navigate('/auth', { replace: true });
   };
 
   const navItems = [
