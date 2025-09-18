@@ -3,13 +3,15 @@ import time
 import random
 from twitter.fetch import fetch_tweets
 from llm.analyze import analyze_post_with_gemini
-from db.models import store_hazard_tweet
+from db.scraped_data_db import store_scraped_tweet_data
 
 # QUERY = 'lang:en (tsunami OR flood OR flooding OR cyclone OR hurricane OR typhoon OR "high waves" OR "storm surge" OR swell) (warning OR alert OR advisory OR watch OR evacuate OR evacuation OR hazard OR inundation) -is:retweet -is:reply -is:quote -giveaway -meme -politics -election -vote'
-
-QUERY = 'lang:en (tsunami OR flood OR flooding OR cyclone OR hurricane OR typhoon OR "high waves" OR "storm surge" OR swell) (warning OR alert OR advisory OR watch OR evacuate OR evacuation OR hazard OR inundation) -is:retweet -is:reply -is:quote -giveaway -meme -politics -election -vote'
-
-
+QUERY = (
+    'lang:en place_country:IN '
+    '("heavy rain" OR cloudburst OR landslide OR tsunami OR flood OR flooding OR cyclone OR "storm surge") '
+    '(warning OR alert OR advisory OR watch OR evacuate OR evacuation OR relief OR helpline OR IMD OR NDMA) '
+    '-is:retweet -is:reply -is:quote -giveaway -meme -politics -election -vote'
+)
 
 def main():
 	# Load last since_id to avoid duplicates
@@ -107,10 +109,33 @@ def main():
 				# If model didn't extract a location, use place name if available
 				if place_name and not (llm_json.get("location") or "").strip():
 					llm_json["location"] = place_name
-				llm_json["tweet_url"] = tweet_url
-				llm_json["tweet_created_at"] = tweet_created_at
-				store_hazard_tweet(llm_json)
-				print("Stored in DB.")
+				
+				# Prepare content metadata
+				content_metadata = {
+					"hashtags": hashtags,
+					"place_id": place_id,
+					"place_name": place_name,
+					"tweet_id": tweet_id,
+					"entities": entities
+				}
+				
+				# Store in scraped_data table
+				success = store_scraped_tweet_data(
+					tweet_url=tweet_url,
+					event_type=llm_json.get("event_type"),
+					location=llm_json.get("location"),
+					urgency=llm_json.get("urgency"),
+					sentiment=llm_json.get("sentiment"),
+					raw_content=text,
+					content_metadata=content_metadata,
+					source_created_at=tweet_created_at,
+					processing_notes="Processed by Twitter scraper NLP pipeline"
+				)
+				
+				if success:
+					print("Stored in scraped_data table.")
+				else:
+					print("Failed to store in scraped_data table.")
 			else:
 				print("Not a hazard, not stored.")
 		except Exception as e:

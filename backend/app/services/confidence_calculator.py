@@ -108,7 +108,7 @@ class ConfidenceCalculator:
             return "High"
         elif score >= 0.6:
             return "Medium"
-        elif score >= 0.4:
+        elif score >= 0.35:
             return "Low"
         else:
             return "Very Low"

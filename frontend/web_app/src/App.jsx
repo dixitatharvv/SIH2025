@@ -14,7 +14,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={isLoggedIn ? <Home /> : <Navigate to="/auth" replace />} />
+          <Route index element={true ? <Home /> : <Navigate to="/auth" replace />} />
           <Route path="report" element={<Report />} />
           <Route path="community" element={<Community />} />
           <Route path="profile" element={<Profile />} />

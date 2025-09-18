@@ -37,6 +37,7 @@ const MapView = ({
   const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
   const style = useMemo(() => ({ height, width: '100%' }), [height]);
+  const visibilityThreshold = 0.35; // only show circles when confidence >= 0.35
 
   return (
     <div className={className} style={style}>
@@ -45,6 +46,7 @@ const MapView = ({
         <TileLayer url={tileUrl} attribution={attribution} />
         {hotspots.map((h, idx) => {
           const c = Math.max(0, Math.min(1, h.confidence ?? 0));
+			if (c < visibilityThreshold) return null;
           // Shades of red by confidence (low alpha for low confidence)
           const fillOpacity = 0.25 + c * 0.5; // 0.25..0.75
           const color = `rgba(220, 38, 38, ${Math.min(1, 0.4 + c * 0.5)})`; // red-600 stroke

@@ -14,7 +14,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.schema import HumanMessage
 
 # DB utilities
-from db_utils import ensure_schema, store_alert
+from scraped_data_db import store_scraped_youtube_data
 
 # --- CONFIGURATION ---
 load_dotenv()
@@ -85,9 +85,6 @@ def analyze_video_text_with_llm(video_data):
 if __name__ == "__main__":
     print("--- Starting Ocean Hazard Monitoring Run ---")
 
-    # Ensure DB schema exists
-    ensure_schema()
-
     found_videos = search_for_videos(YOUTUBE_API_KEY, SEARCH_KEYWORDS, SEARCH_TIMEFRAME_HOURS)
     high_priority_alerts = []
 
@@ -117,19 +114,50 @@ if __name__ == "__main__":
                         )
                         high_priority_alerts.append(alert_message)
 
-                        data_to_store = {
-                            "event_type": analysis.get('event_type', 'N/A'),
-                            "location": ", ".join(analysis.get('locations_mentioned', [])) or 'N/A',
-                            "urgency": (
-                                'High' if confidence >= 80 else 'Medium' if confidence >= 50 else 'Low'
-                            ),
-                            "sentiment": 'Neutral',
-                            "video_url": f"https://www.youtube.com/watch?v={video['video_id']}",
-                            "video_created_at": video.get('published_at'),
-                            "video_date": (video.get('published_at') or '')[:10] if video.get('published_at') else None,
-                            "video_time": (video.get('published_at') or '')[11:19] if video.get('published_at') else None,
+                        # Prepare content metadata
+                        content_metadata = {
+                            "video_id": video['video_id'],
+                            "title": video['title'],
+                            "confidence_score": confidence,
+                            "reasoning": analysis.get('reasoning', 'N/A'),
+                            "locations_mentioned": analysis.get('locations_mentioned', []),
+                            "is_potential_event": is_event
                         }
-                        store_alert(data_to_store)
+                        
+                        # Combine title, description, and comments for raw content
+                        raw_content = f"Title: {video['title']}\n"
+                        if details.get('description'):
+                            raw_content += f"Description: {details['description']}\n"
+                        if details.get('comments'):
+                            raw_content += f"Comments: {' '.join(details['comments'])}"
+
+                        # Parse published_at timestamp
+                        source_created_at = None
+                        if video.get('published_at'):
+                            try:
+                                source_created_at = datetime.datetime.fromisoformat(
+                                    video['published_at'].replace('Z', '+00:00')
+                                )
+                            except:
+                                pass
+
+                        # Store in scraped_data table
+                        success = store_scraped_youtube_data(
+                            video_url=f"https://www.youtube.com/watch?v={video['video_id']}",
+                            event_type=analysis.get('event_type', 'N/A'),
+                            location=", ".join(analysis.get('locations_mentioned', [])) or 'N/A',
+                            urgency='High' if confidence >= 80 else 'Medium' if confidence >= 50 else 'Low',
+                            sentiment='Neutral',
+                            raw_content=raw_content,
+                            content_metadata=content_metadata,
+                            source_created_at=source_created_at,
+                            processing_notes=f"Processed by YouTube scraper NLP pipeline (Confidence: {confidence}%)"
+                        )
+                        
+                        if success:
+                            print(f"Stored high-priority alert in scraped_data table.")
+                        else:
+                            print(f"Failed to store high-priority alert in scraped_data table.")
 
                 time.sleep(2)  # be gentle with rate limits
     else:

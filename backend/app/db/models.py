@@ -54,6 +54,10 @@ class VerificationSource(str, enum.Enum):
     weather_api = "weather_api"
     peer_report = "peer_report"
 
+class ScrapedDataSource(str, enum.Enum):
+    twitter = "twitter"
+    youtube = "youtube"
+
 # --- Main Tables ---
 
 class User(Base):
@@ -116,4 +120,30 @@ class Verification(Base):
     created_at = Column(TIMESTAMP(timezone=True), server_default=text("TIMEZONE('utc', now())"), nullable=False)
     
     report = relationship("Report", back_populates="verifications")
+
+class ScrapedData(Base):
+    __tablename__ = "scraped_data"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    
+    source = Column(ENUM(ScrapedDataSource, name="scraped_data_source"), nullable=False)
+    source_url = Column(String, nullable=False, unique=True)
+    
+    # NLP Analysis Results
+    event_type = Column(String(255), nullable=True)
+    location = Column(String(255), nullable=True)
+    urgency = Column(String(50), nullable=True)
+    sentiment = Column(String(50), nullable=True)
+    
+    # Raw content and metadata
+    raw_content = Column(String, nullable=True)  # Original text content
+    content_metadata = Column(JSONB, nullable=True)  # Additional metadata like author, etc.
+    
+    # Timestamps
+    source_created_at = Column(TIMESTAMP(timezone=True), nullable=True)  # When the original content was created
+    scraped_at = Column(TIMESTAMP(timezone=True), server_default=text("TIMEZONE('utc', now())"), nullable=False)  # When we scraped it
+    
+    # Processing status
+    is_processed = Column(Boolean, default=False, nullable=False)
+    processing_notes = Column(String, nullable=True)
 

@@ -8,6 +8,31 @@ const Home = () => {
   const [loadingHotspots, setLoadingHotspots] = useState(true);
   const [hotspotError, setHotspotError] = useState('');
 
+  // Compute distances from Bengaluru to Safe Places (Haversine)
+  const toRad = (deg) => (deg * Math.PI) / 180;
+  const haversineKm = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // km
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+  const BLR = { lat: 12.9716, lng: 77.5946 };
+  const JUHU = { lat: 19.0988, lng: 72.8265 };
+  const MARINA = { lat: 13.0500, lng: 80.2824 };
+  // Example Bengaluru PHC (Indiranagar)
+  const PHC = { lat: 12.9719, lng: 77.6412 };
+  // Example Cyclone Relief Shelter (Visakhapatnam)
+  const CYCLONE_SHELTER = { lat: 17.6868, lng: 83.2185 };
+  const dJuhu = haversineKm(BLR.lat, BLR.lng, JUHU.lat, JUHU.lng);
+  const dMarina = haversineKm(BLR.lat, BLR.lng, MARINA.lat, MARINA.lng);
+  const dPhc = haversineKm(BLR.lat, BLR.lng, PHC.lat, PHC.lng);
+  const dCyclone = haversineKm(BLR.lat, BLR.lng, CYCLONE_SHELTER.lat, CYCLONE_SHELTER.lng);
+
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -68,9 +93,9 @@ const Home = () => {
                 ) : null}
                 <MapView
                   height="256px"
-                  center={[19.0760, 72.8777]}
+                  center={[12.9716, 77.5946]}
                   zoom={11}
-                  markers={[{ position: [19.0760, 72.8777], popup: 'You are here' }]}
+                  markers={[{ position: [12.9716, 77.5946], popup: 'You are here' }]}
                   hotspots={hotspots}
                 />
                 {loadingHotspots ? (
@@ -109,7 +134,7 @@ const Home = () => {
                 </p>
                 <div className="h-48 rounded-xl overflow-hidden mb-6 flex-grow">
                   <img 
-                    src="/src/assets/flooding.jpg" 
+                    src="/src/assets/flooding4.jpg" 
                     alt="Coastal flooding" 
                     className="w-full h-full object-cover"
                   />
@@ -185,7 +210,7 @@ const Home = () => {
                 </p>
                 <div className="h-48 rounded-xl overflow-hidden mb-6 flex-grow">
                   <img 
-                    src="/src/assets/flooding3.jpg" 
+                    src="/src/assets/flooding5.jpg" 
                     alt="River flood" 
                     className="w-full h-full object-cover"
                   />
@@ -236,7 +261,7 @@ const Home = () => {
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between text-base mb-2">
-                    <span className="text-gray-800 font-medium">Wave Height</span>
+                    <span className="text-gray-800 font-medium">Sea Level</span>
                     <span className="font-bold text-blue-800">75%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3">
@@ -256,7 +281,7 @@ const Home = () => {
                 
                 <div>
                   <div className="flex justify-between text-base mb-2">
-                    <span className="text-gray-800 font-medium">Water Temperature</span>
+                    <span className="text-gray-800 font-medium">Marine Pollution</span>
                     <span className="font-bold text-blue-800">30%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3">
@@ -297,18 +322,18 @@ const Home = () => {
             </div>
             
             <div className="space-y-4">
-              {/* Main Beach Lifeguard Station */}
+              {/* Juhu Beach Lifeguard Station */}
               <div className="flex items-start justify-between py-4 border-b border-gray-100 last:border-b-0">
                 <div className="flex items-start space-x-3">
                   <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center mt-1">
                     <Shield className="w-4 h-4 text-orange-600" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-base mb-1">Main Beach Lifeguard Station</h3>
-                    <p className="text-sm text-blue-600 mb-2 text-left">Lifeguard Station</p>
+                    <h3 className="font-semibold text-gray-900 text-base mb-1">Juhu Beach Lifeguard Station</h3>
+                    <a href="https://maps.app.goo.gl/sM9Dss4b6HWwFEEc9" className="block text-sm text-blue-600 mb-2 text-left">Lifeguard Station</a>
                     <div className="flex items-center text-sm text-gray-600 mb-1">
                       <Phone className="w-4 h-4 mr-1" />
-                      <span>(555) 123-4567</span>
+                      <span>+91 22 2620 1234</span>
                     </div>
                     <div className="flex items-center text-sm text-gray-600">
                       <Clock className="w-4 h-4 mr-1" />
@@ -317,7 +342,7 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-gray-600 mb-1">0.2 mi</p>
+                  <p className="text-sm text-gray-600 mb-1">{`${Math.round(dJuhu)} km`}</p>
                   <div className="flex items-center">
                     <Star className="w-4 h-4 text-yellow-400 fill-current" />
                     <span className="text-sm font-medium text-gray-700 ml-1">4.8</span>
@@ -325,18 +350,18 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* Harbor Safe Zone */}
+              {/* Marina Beach Safe Zone */}
               <div className="flex items-start justify-between py-4 border-b border-gray-100 last:border-b-0">
                 <div className="flex items-start space-x-3">
                   <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mt-1">
                     <Anchor className="w-4 h-4 text-blue-600" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-base mb-1">Harbor Safe Zone</h3>
-                    <p className="text-sm text-blue-600 mb-2 text-left">Protected Harbor</p>
+                    <h3 className="font-semibold text-gray-900 text-base mb-1">Marina Beach Safe Zone</h3>
+                    <p className="text-sm text-blue-600 mb-2 text-left">Protected Zone</p>
                     <div className="flex items-center text-sm text-gray-600 mb-1">
                       <Phone className="w-4 h-4 mr-1" />
-                      <span>(555) 987-6543</span>
+                      <span>+91 44 2844 5678</span>
                     </div>
                     <div className="flex items-center text-sm text-gray-600">
                       <Clock className="w-4 h-4 mr-1" />
@@ -345,7 +370,7 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-gray-600 mb-1">0.5 mi</p>
+                  <p className="text-sm text-gray-600 mb-1">{`${Math.round(dMarina)} km`}</p>
                   <div className="flex items-center">
                     <Star className="w-4 h-4 text-yellow-400 fill-current" />
                     <span className="text-sm font-medium text-gray-700 ml-1">4.5</span>
@@ -353,18 +378,18 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* Emergency Medical Station */}
+              {/* Primary Health Centre */}
               <div className="flex items-start justify-between py-4 border-b border-gray-100 last:border-b-0">
                 <div className="flex items-start space-x-3">
                   <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mt-1">
                     <Cross className="w-4 h-4 text-purple-600" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-base mb-1">Emergency Medical Station</h3>
+                    <h3 className="font-semibold text-gray-900 text-base mb-1">Primary Health Centre</h3>
                     <p className="text-sm text-blue-600 mb-2 text-left">Medical Facility</p>
                     <div className="flex items-center text-sm text-gray-600 mb-1">
                       <Phone className="w-4 h-4 mr-1" />
-                      <span>(555) 911-1111</span>
+                      <span>+91 80 2244 9911</span>
                     </div>
                     <div className="flex items-center text-sm text-gray-600">
                       <Clock className="w-4 h-4 mr-1" />
@@ -373,7 +398,7 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-gray-600 mb-1">0.8 mi</p>
+                  <p className="text-sm text-gray-600 mb-1">{`${dPhc.toFixed(1)} km`}</p>
                   <div className="flex items-center">
                     <Star className="w-4 h-4 text-yellow-400 fill-current" />
                     <span className="text-sm font-medium text-gray-700 ml-1">4.9</span>
@@ -381,18 +406,18 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* Coastal Emergency Shelter */}
+              {/* Cyclone Relief Shelter */}
               <div className="flex items-start justify-between py-4 border-b border-gray-100 last:border-b-0">
                 <div className="flex items-start space-x-3">
                   <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center mt-1">
                     <Shield className="w-4 h-4 text-orange-600" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-base mb-1">Coastal Emergency Shelter</h3>
+                    <h3 className="font-semibold text-gray-900 text-base mb-1">Cyclone Relief Shelter</h3>
                     <p className="text-sm text-blue-600 mb-2 text-left">Emergency Shelter</p>
                     <div className="flex items-center text-sm text-gray-600 mb-1">
                       <Phone className="w-4 h-4 mr-1" />
-                      <span>(555) 456-7890</span>
+                      <span>+91 33 2251 6789</span>
                     </div>
                     <div className="flex items-center text-sm text-gray-600">
                       <Clock className="w-4 h-4 mr-1" />
@@ -401,7 +426,7 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-gray-600 mb-1">1.2 mi</p>
+                  <p className="text-sm text-gray-600 mb-1">{`${Math.round(dCyclone)} km`}</p>
                   <div className="flex items-center">
                     <Star className="w-4 h-4 text-yellow-400 fill-current" />
                     <span className="text-sm font-medium text-gray-700 ml-1">4.7</span>
