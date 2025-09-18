@@ -62,3 +62,5 @@ ai/twitter-scraper/tatya
 ai/twitter-scraper/since_id.txt  
 tatya
 venv
+ai/youtube-scraper/.yt
+ai/youtube-scraper/yt-env
